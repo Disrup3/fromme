@@ -4,6 +4,7 @@ import Head from "next/head";
 import { api } from "~/utils/api";
 
 import { ConnectButton } from "@rainbow-me/rainbowkit"; //TEST
+import GetStarted from "~/components/ui/GetStarted";
 
 const Home: NextPage = () => {
   return (
@@ -19,6 +20,9 @@ const Home: NextPage = () => {
         <div className="bg-secondary text-white">SECONDARY COLOR</div>
         <div className="bg-base-100 text-black">BASE-100 COLOR</div>
         <div className="bg-accent text-white">ACCENT COLOR</div>
+        <div className="flex justify-center">
+          <GetStarted />
+        </div>
       </main>
     </>
   );
