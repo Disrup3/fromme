@@ -3,6 +3,8 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import { api } from "~/utils/api";
 
+import { ConnectButton } from "@rainbow-me/rainbowkit"; //TEST
+
 const Home: NextPage = () => {
   return (
     <>
@@ -12,6 +14,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="">
+        <ConnectButton />
         <div className="bg-primary text-white">PRIMARY COLOR</div>
         <div className="bg-secondary text-white">SECONDARY COLOR</div>
         <div className="bg-base-100 text-black">BASE-100 COLOR</div>
