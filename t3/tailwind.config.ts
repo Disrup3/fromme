@@ -9,10 +9,10 @@ export default {
     themes: [
       {
         mytheme: {
-          primary: "rbg(104 50 243)",
-          secondary: "rgb(54, 57, 68)",
-          accent: "rgb(221, 84, 113)",
-          "base-100": "rgb(255, 255, 255)",
+          primary: "#6832F3",
+          secondary: "#363944",
+          "base-100": "#FFFFFF",
+          accent: "#DD5471",
         },
       },
     ],
