@@ -6,8 +6,18 @@ import { api } from "~/utils/api";
 import { ConnectButton } from "@rainbow-me/rainbowkit"; //TEST
 import GetStarted from "~/components/ui/GetStarted";
 import HeroSection from "~/components/ui/HeroSection";
+import Carousel from "~/components/ui/Carousel";
 
 const Home: NextPage = () => {
+
+   const itemsCarousel : CarouselItem[] = [
+    { image: "images/carousel-test/1.png", title: "Playtime", creator: "Daniel Illescas", precio: 50 },
+    { image: "images/carousel-test/2.png", title: "Tras las cámaras de la celebración", creator: "Kepa Arrizabalaga", precio: 30 },
+    { image: "images/carousel-test/3.png", title: "Maqueta \"Freaky Goes To Hollywood\"", creator: "Love of Lesbian Music", precio: 130 },
+    { image: "images/carousel-test/4.png", title: "Barcelona Parque Güell", creator: "Pablo González", precio: 10 },
+    { image: "images/carousel-test/5.png", title: "Málaga Ronda Bridge", creator: "Pablo González", precio: 15  },
+  ];
+
   return (
     <>
       <Head>
@@ -19,7 +29,8 @@ const Home: NextPage = () => {
         <ConnectButton />
         <div className="flex flex-column flex-wrap justify-center">
           <HeroSection/>
-          <GetStarted />
+          <GetStarted/>
+          <Carousel items={itemsCarousel}/>
         </div>
         <div className="bg-base-100 text-black">BASE-100 COLOR</div>
         <div className="bg-primary text-white">PRIMARY COLOR</div>
