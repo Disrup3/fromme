@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.2",
+    "@openzeppelin/contracts": "^4.9.1",
     "hardhat-ethers": "^1.0.1"
   }
 }
