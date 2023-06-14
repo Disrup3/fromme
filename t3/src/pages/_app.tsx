@@ -13,7 +13,7 @@ import { publicProvider } from "wagmi/providers/public";
 
 const { chains, publicClient } = configureChains(
   [mainnet, polygon, optimism, arbitrum, sepolia], // TODO: Decidir qué cadenas querremos.
-  [alchemyProvider({ apiKey: process.env.ALCHEMY_ID! }), publicProvider()] // TODO: Añadir ALCHEMY_ID a .env
+  [publicProvider()]
 );
 
 const { connectors } = getDefaultWallets({
