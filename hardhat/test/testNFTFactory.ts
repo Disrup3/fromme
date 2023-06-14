@@ -82,5 +82,20 @@ describe("NFTFactory", function () {
 
     });
 
+    it("Transfers NFT and emits event", async function () {
+      const { nftFactory, account1, account2 } = await loadFixture(deployFixture);
+
+      const first_nft_tokenUri = "hola.test"
+      const first_token_fee = 1000 // in base 10_000 (so 1000 = 10%)
+
+      await nftFactory.connect(account1).createNFT(first_nft_tokenUri, first_token_fee)
+      expect(await nftFactory.ownerOf(0)).to.equal(account1.address);
+
+      expect(await nftFactory.connect(account1).transfer(account2.address, 0))
+      .to.emit(nftFactory, "Transfer")
+      .withArgs(account1.address, account1.address, 0)
+
+      expect(await nftFactory.ownerOf(0)).to.equal(account2.address);
+    });
   });
 });
