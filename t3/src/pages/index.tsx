@@ -7,6 +7,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit"; //TEST
 import GetStarted from "~/components/ui/GetStarted";
 import HeroSection from "~/components/ui/HeroSection";
 import Carousel from "~/components/ui/Carousel";
+import Footer from "~/components/ui/Footer";
 
 const Home: NextPage = () => {
   const itemsCarousel: CarouselItem[] = [
@@ -64,6 +65,7 @@ const Home: NextPage = () => {
           </div>
           <Carousel items={itemsCarousel} />
         </div>
+        <Footer />
         <div className="bg-base-100 text-black">BASE-100 COLOR</div>
         <div className="bg-primary text-white">PRIMARY COLOR</div>
         <div className="bg-secondary text-white">SECONDARY COLOR</div>
