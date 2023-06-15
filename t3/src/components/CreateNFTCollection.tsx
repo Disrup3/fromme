@@ -12,6 +12,7 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
     handleSubmit,
     formState: { errors },
     watch,
+    setValue,
   } = useForm<FormCreate>();
 
   const onSubmit: SubmitHandler<FormCreate> = (data) => console.log("data", data);
@@ -99,7 +100,10 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
       <div className="flex w-full flex-col">
         <label>Image:</label>
         <Dropzone
-          onDrop={(acceptedFiles) => register("image", { required: true, value: acceptedFiles[0] })}
+          onDrop={(acceptedFiles) => {
+            register("image",{ required: true, value: acceptedFiles[0] });
+            setValue("image", acceptedFiles[0]);
+          }}
         >
           {({ getRootProps, getInputProps }) => (
             <section>

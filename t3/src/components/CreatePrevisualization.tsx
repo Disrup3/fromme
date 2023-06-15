@@ -1,6 +1,4 @@
-import { useForm, SubmitHandler } from "react-hook-form";
-import Dropzone, { useDropzone } from "react-dropzone";
-import { useEffect, FC, useMemo } from "react";
+import { FC } from "react";
 
 interface Props {
   form: FormCreate,
