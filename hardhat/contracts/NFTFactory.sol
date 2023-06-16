@@ -41,6 +41,10 @@ contract NFTFactory is ERC721Royalty, ERC721URIStorage, Ownable {
         tokenId += 1; // increment tokenId
     }
 
+    function transfer(address _to, uint256 _tokenId) external {
+        _transfer(msg.sender, _to, _tokenId);
+    }
+
     // override functions
     function _burn(uint256 _tokenId) internal override(ERC721URIStorage, ERC721Royalty) {
         super._burn(_tokenId);

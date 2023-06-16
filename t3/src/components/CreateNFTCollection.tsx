@@ -1,6 +1,7 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import Dropzone, { useDropzone } from "react-dropzone";
-import { Dispatch, FC, SetStateAction, useMemo } from "react";
+import { Dispatch, FC, SetStateAction, useMemo, useEffect } from "react";
+import { NFTStorage } from "nft.storage";
 
 interface Props {
   onChangeForm: Dispatch<SetStateAction<FormCreate>>,
@@ -15,11 +16,61 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
     setValue,
   } = useForm<FormCreate>();
 
-  const onSubmit: SubmitHandler<FormCreate> = (data) => console.log("data", data);
-
   watch(data => {
     onChangeForm(data);
   });
+
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    console.log("data", data);
+    // TODO: OJO --> Lo ponga como lo ponga en .env me salta missing token
+    const token =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDY4ZGUxM2E5OUE0YTkyRDdEMTFDNDMxQ0IzNDc2NDZBOWJCZkRCMzQiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY4Njc3MjAwNjM4OCwibmFtZSI6ImZyb21tZS1kZXYifQ.C-6OrEBBh64q1IowVo_bfRphCq5qo388DMwEcoyfyjg";
+    console.log("token", token);
+    try {
+      const metadata = await new NFTStorage({ token }).store({
+        name: data.titulo,
+        description: data.descripcion,
+        image: data.imagen,
+      });
+      console.log({ "IPFS URL for the metadata": metadata.url });
+      console.log({ "metadata.json contents": metadata.data });
+      console.log({
+        "metadata.json contents with IPFS gateway URLs": metadata.embed(),
+      });
+    } catch (err: any) {
+      console.log(err);
+    }
+    // try {
+    //   const response = await axios.post(
+    //     "https://api.nft.storage/store",
+    //     {
+    //       file: data.imagen,
+    //     },
+    //     {
+    //       headers: {
+    //         Authorization: `Bearer ${process.env.NFT_STORAGE_KEY}`,
+    //       },
+    //     }
+    //   );
+    //   console.log("response", response);
+    //   return response;
+    // } catch (error) {
+    //   console.log(error);
+    // }
+  };
+
+  // console.log(watch("titulo")); // watch input value by passing the name of it
+
+  // ----------------------DROPZONE----------------------
+  const {
+    getRootProps,
+    getInputProps,
+    isFocused,
+    isDragAccept,
+    isDragReject,
+    acceptedFiles,
+  } = useDropzone({ accept: { "image/*": [] } });
+
 
   const baseStyle = {
     flex: 1,
@@ -48,12 +99,6 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
   const rejectStyle = {
     borderColor: "#ff1744",
   };
-
-  const {
-    isFocused,
-    isDragAccept,
-    isDragReject,
-  } = useDropzone({ accept: { "image/*": [] } });
 
   const style: any = useMemo(
     () => ({

@@ -1,18 +1,20 @@
-import { ethers } from "hardhat";
+import { ethers, network } from "hardhat";
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const unlockTime = currentTimestampInSeconds + 60;
 
-  const lockedAmount = ethers.utils.parseEther("0.001");
+  const NAME = 'FROMME';
+  const SYMBOL = 'FME';
 
-  const Lock = await ethers.getContractFactory("NFTFactory");
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
+  // Contracts are deployed using the first signer/account by default
+  const [owner, account1, account2] = await ethers.getSigners();
 
-  await lock.deployed();
+  const NFTFactory = await ethers.getContractFactory("NFTFactory");
+  const nftFactory = await NFTFactory.deploy(NAME, SYMBOL);
+
+  await nftFactory.deployed();
 
   console.log(
-    `Lock with ${ethers.utils.formatEther(lockedAmount)}ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`
+    `NFTFactory with deployed to ${nftFactory.address}`
   );
 }
 
