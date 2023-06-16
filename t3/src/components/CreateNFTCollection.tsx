@@ -4,7 +4,7 @@ import { Dispatch, FC, SetStateAction, useMemo, useEffect } from "react";
 import { NFTStorage } from "nft.storage";
 
 interface Props {
-  onChangeForm: Dispatch<SetStateAction<FormCreate>>,
+  onChangeForm: Dispatch<SetStateAction<FormCreate>>;
 }
 
 const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
@@ -16,21 +16,22 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
     setValue,
   } = useForm<FormCreate>();
 
-  watch(data => {
+  watch((data) => {
     onChangeForm(data);
   });
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+  const onSubmit: SubmitHandler<FormCreate> = async (data) => {
     console.log("data", data);
-    // TODO: OJO --> Lo ponga como lo ponga en .env me salta missing token
-    const token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDY4ZGUxM2E5OUE0YTkyRDdEMTFDNDMxQ0IzNDc2NDZBOWJCZkRCMzQiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY4Njc3MjAwNjM4OCwibmFtZSI6ImZyb21tZS1kZXYifQ.C-6OrEBBh64q1IowVo_bfRphCq5qo388DMwEcoyfyjg";
+    if (!data.title || !data.description || !data.image)
+      return console.log("formulario incompleto");
+
+    const token = process.env.NEXT_PUBLIC_NFT_STORAGE_TOKEN || "";
     console.log("token", token);
     try {
       const metadata = await new NFTStorage({ token }).store({
-        name: data.titulo,
-        description: data.descripcion,
-        image: data.imagen,
+        name: data.title!,
+        description: data.description!,
+        image: data.image!,
       });
       console.log({ "IPFS URL for the metadata": metadata.url });
       console.log({ "metadata.json contents": metadata.data });
@@ -70,7 +71,6 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
     isDragReject,
     acceptedFiles,
   } = useDropzone({ accept: { "image/*": [] } });
-
 
   const baseStyle = {
     flex: 1,
@@ -123,9 +123,7 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
           className="input-bordered input w-full"
           {...register("title", { required: true })}
         />
-        {errors.title && (
-          <span className="text-accent">Required field</span>
-        )}
+        {errors.title && <span className="text-accent">Required field</span>}
       </div>
 
       {/* Descripción */}
@@ -146,16 +144,14 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
         <label>Image:</label>
         <Dropzone
           onDrop={(acceptedFiles) => {
-            register("image",{ required: true, value: acceptedFiles[0] });
+            register("image", { required: true, value: acceptedFiles[0] });
             setValue("image", acceptedFiles[0]);
           }}
         >
           {({ getRootProps, getInputProps }) => (
             <section>
               <div {...getRootProps({ style })}>
-                <input
-                  {...getInputProps()}
-                />
+                <input {...getInputProps()} />
                 <p>Drag and drop some files here, or click to select files</p>
               </div>
             </section>
@@ -173,9 +169,7 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
           <option value="Party">Party</option>
           <option value="Shows">Shows</option>
         </select>
-        {errors.category && (
-          <span className="text-accent">Required field</span>
-        )}
+        {errors.category && <span className="text-accent">Required field</span>}
       </div>
       {/* Precio */}
       <div className="flex w-full flex-col">
