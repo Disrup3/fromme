@@ -1,7 +1,8 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import Dropzone, { useDropzone } from "react-dropzone";
-import { Dispatch, FC, SetStateAction, useMemo, useEffect } from "react";
+import { Dispatch, FC, SetStateAction, useMemo, useEffect, useState } from "react";
 import { NFTStorage } from "nft.storage";
+import useNftfactoryContract from "../smart-contracts/hooks/create";
 
 interface Props {
   onChangeForm: Dispatch<SetStateAction<FormCreate>>;
@@ -16,9 +17,17 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
     setValue,
   } = useForm<FormCreate>();
 
+  const {
+    approveCreate,
+  } = useNftfactoryContract(
+    "", BigInt(0), () => {}
+  );
+
   watch((data) => {
     onChangeForm(data);
   });
+
+  const [tokenUri, setTokenUri] = useState("");
 
   const onSubmit: SubmitHandler<FormCreate> = async (data) => {
     console.log("data", data);
@@ -28,16 +37,21 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
     const token = process.env.NEXT_PUBLIC_NFT_STORAGE_TOKEN || "";
     console.log("token", token);
     try {
-      const metadata = await new NFTStorage({ token }).store({
+      const uriJson = {
         name: data.title!,
         description: data.description!,
         image: data.image!,
-      });
+      }
+      const metadata = await new NFTStorage({ token }).store(uriJson);
       console.log({ "IPFS URL for the metadata": metadata.url });
       console.log({ "metadata.json contents": metadata.data });
       console.log({
         "metadata.json contents with IPFS gateway URLs": metadata.embed(),
       });
+      setTokenUri(metadata.url);
+
+      approveCreate?.();
+      // _tokenURI, _feeNumerator
     } catch (err: any) {
       console.log(err);
     }
