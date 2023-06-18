@@ -36,6 +36,9 @@ export default function useNftfactoryContract({
         onSuccess: () => {
             onSuccessfulCreateNFT();
         },
+        onError: () => {
+            // TODO handle error
+        },
     });
 
     return {
