@@ -1,6 +1,6 @@
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, set } from "react-hook-form";
 import Dropzone, { useDropzone } from "react-dropzone";
-import { Dispatch, FC, SetStateAction, useMemo, useEffect, useState } from "react";
+import { Dispatch, FC, SetStateAction, useMemo, useState } from "react";
 import { NFTStorage } from "nft.storage";
 import useNftfactoryContract from "../smart-contracts/hooks/create";
 
@@ -17,17 +17,21 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
     setValue,
   } = useForm<FormCreate>();
 
-  const {
-    approveCreate,
-  } = useNftfactoryContract(
-    "", BigInt(0), () => {}
-  );
+  const [ submitLoading, setSubmitLoading ] = useState<boolean>(false);
 
-  watch((data) => {
-    onChangeForm(data);
+  const { // Web hook para interactuar con el contrato
+    write,
+  } = useNftfactoryContract({
+    _tokenURI: "",
+    _feeNumerator: BigInt(0),
+    onSuccessfulCreateNFT: () => {
+      setSubmitLoading(false);
+    },
   });
 
-  const [tokenUri, setTokenUri] = useState("");
+  watch((data) => { // Envia el form a create.tsx cada vez que hay un cambio
+    onChangeForm(data);
+  });
 
   const onSubmit: SubmitHandler<FormCreate> = async (data) => {
     console.log("data", data);
@@ -37,6 +41,7 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
     const token = process.env.NEXT_PUBLIC_NFT_STORAGE_TOKEN || "";
     console.log("token", token);
     try {
+      setSubmitLoading(true);
       const uriJson = {
         name: data.title!,
         description: data.description!,
@@ -45,45 +50,21 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
       const metadata = await new NFTStorage({ token }).store(uriJson);
       console.log({ "IPFS URL for the metadata": metadata.url });
       console.log({ "metadata.json contents": metadata.data });
-      console.log({
-        "metadata.json contents with IPFS gateway URLs": metadata.embed(),
-      });
-      setTokenUri(metadata.url);
-
-      approveCreate?.();
-      // _tokenURI, _feeNumerator
+      console.log({"metadata.json contents with IPFS gateway URLs": metadata.embed()});
+      write?.();
     } catch (err: any) {
       console.log(err);
     }
-    // try {
-    //   const response = await axios.post(
-    //     "https://api.nft.storage/store",
-    //     {
-    //       file: data.imagen,
-    //     },
-    //     {
-    //       headers: {
-    //         Authorization: `Bearer ${process.env.NFT_STORAGE_KEY}`,
-    //       },
-    //     }
-    //   );
-    //   console.log("response", response);
-    //   return response;
-    // } catch (error) {
-    //   console.log(error);
-    // }
   };
-
-  // console.log(watch("titulo")); // watch input value by passing the name of it
 
   // ----------------------DROPZONE----------------------
   const {
-    getRootProps,
-    getInputProps,
+    // getRootProps,
+    // getInputProps,
     isFocused,
     isDragAccept,
     isDragReject,
-    acceptedFiles,
+    // acceptedFiles,
   } = useDropzone({ accept: { "image/*": [] } });
 
   const baseStyle = {
@@ -139,7 +120,6 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
         />
         {errors.title && <span className="text-accent">Required field</span>}
       </div>
-
       {/* Descripción */}
       <div className="flex w-full flex-col">
         <label>Description:</label>
@@ -152,7 +132,6 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
           <span className="text-accent">Required field</span>
         )}
       </div>
-
       {/* Imagen */}
       <div className="flex w-full flex-col">
         <label>Image:</label>
@@ -197,7 +176,12 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
           <span className="text-accent">Required field</span>
         )}
       </div>
-      <input type="submit" className="cursor-pointer" />
+      {
+        submitLoading
+        ? <p>Cargando...</p>
+        : <input type="submit" className="cursor-pointer"/>
+      }
+      
     </form>
   );
 };
