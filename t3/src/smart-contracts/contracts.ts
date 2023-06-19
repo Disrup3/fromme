@@ -1,5 +1,5 @@
 export const nftfactoryContract  = { 
-    address: "0xBB645BdAFD93Ca5D91B457709e55C0318a6f5449",
+    address: "0xe0e34037e33FbB36ec89de6cB92477f7Bb5B04A7",
     abi: [
         {
           "inputs": [
