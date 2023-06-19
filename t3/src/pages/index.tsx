@@ -8,6 +8,7 @@ import GetStarted from "~/components/ui/GetStarted";
 import HeroSection from "~/components/ui/HeroSection";
 import Carousel from "~/components/ui/Carousel";
 import Footer from "~/components/ui/Footer";
+import Navbar from "~/components/ui/Navbar";
 
 const Home: NextPage = () => {
   const itemsCarousel: CarouselItem[] = [
@@ -51,6 +52,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
+        <Navbar />
         <ConnectButton />
         <div className="flex-column flex flex-wrap justify-center">
           <HeroSection />
