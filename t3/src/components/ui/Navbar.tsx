@@ -8,12 +8,15 @@ const Navbar = () => {
   return (
     <div className="flex h-24 justify-between border-black px-10">
       <div className="flex items-center gap-16">
-        <Image
-          src={"/images/logo-mobile.svg"}
-          width={100}
-          height={100}
-          alt="Logo Fromme"
-        />
+        <Link href={"/"}>
+          <Image
+            src={"/images/logo-mobile.svg"}
+            width={100}
+            height={100}
+            alt="Logo Fromme"
+            className="cursor-pointer"
+          />
+        </Link>
         <div className="flex gap-5">
           {/* TODO: Actualizar estos enlaces, de haberlos */}
           <Link
