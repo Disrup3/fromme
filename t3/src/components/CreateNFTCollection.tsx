@@ -1,7 +1,8 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import Dropzone, { useDropzone } from "react-dropzone";
-import { Dispatch, FC, SetStateAction, useMemo, useEffect } from "react";
+import { Dispatch, FC, SetStateAction, useMemo, useState } from "react";
 import { NFTStorage } from "nft.storage";
+import useNftfactoryContract from "../smart-contracts/hooks/create";
 
 interface Props {
   onChangeForm: Dispatch<SetStateAction<FormCreate>>;
@@ -16,60 +17,49 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
     setValue,
   } = useForm<FormCreate>();
 
-  watch((data) => {
+  const [ submitLoading, setSubmitLoading ] = useState<boolean>(false);
+  const [ invalidImage, setInvalidImage ] = useState<boolean>(false);
+
+  const { // Web hook para interactuar con el contrato
+    write,
+  } = useNftfactoryContract({
+    _tokenURI: "",
+    _feeNumerator: BigInt(0),
+    onSuccessfulCreateNFT: () => {
+      setSubmitLoading(false);
+      setInvalidImage(false);
+    },
+  });
+
+  watch((data) => { // Envia el form a create.tsx cada vez que hay un cambio
     onChangeForm(data);
   });
 
   const onSubmit: SubmitHandler<FormCreate> = async (data) => {
-    console.log("data", data);
-    if (!data.title || !data.description || !data.image)
-      return console.log("formulario incompleto");
-
     const token = process.env.NEXT_PUBLIC_NFT_STORAGE_TOKEN || "";
-    console.log("token", token);
     try {
-      const metadata = await new NFTStorage({ token }).store({
+      setSubmitLoading(true); // Reconocer cuando está procesandose una transacción en Metamask para mostrarlo con un loading
+      const uriJson = {
         name: data.title!,
         description: data.description!,
         image: data.image!,
-      });
-      console.log({ "IPFS URL for the metadata": metadata.url });
-      console.log({ "metadata.json contents": metadata.data });
-      console.log({
-        "metadata.json contents with IPFS gateway URLs": metadata.embed(),
-      });
+      }
+      setInvalidImage(false);
+      const metadata = await new NFTStorage({ token }).store(uriJson);
+      // console.log({ "IPFS URL for the metadata": metadata.url });
+      // console.log({ "metadata.json contents": metadata.data });
+      // console.log({ "metadata.json contents with IPFS gateway URLs": metadata.embed() });
+      write?.();
     } catch (err: any) {
+      setSubmitLoading(false);
       console.log(err);
     }
-    // try {
-    //   const response = await axios.post(
-    //     "https://api.nft.storage/store",
-    //     {
-    //       file: data.imagen,
-    //     },
-    //     {
-    //       headers: {
-    //         Authorization: `Bearer ${process.env.NFT_STORAGE_KEY}`,
-    //       },
-    //     }
-    //   );
-    //   console.log("response", response);
-    //   return response;
-    // } catch (error) {
-    //   console.log(error);
-    // }
   };
-
-  // console.log(watch("titulo")); // watch input value by passing the name of it
-
-  // ----------------------DROPZONE----------------------
+  // ----------------------DROPZONE---------------------- //
   const {
-    getRootProps,
-    getInputProps,
     isFocused,
     isDragAccept,
     isDragReject,
-    acceptedFiles,
   } = useDropzone({ accept: { "image/*": [] } });
 
   const baseStyle = {
@@ -87,19 +77,15 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
     outline: "none",
     transition: "border .24s ease-in-out",
   };
-
   const focusedStyle = {
     borderColor: "#2196f3",
   };
-
   const acceptStyle = {
     borderColor: "#00e676",
   };
-
   const rejectStyle = {
     borderColor: "#ff1744",
   };
-
   const style: any = useMemo(
     () => ({
       ...baseStyle,
@@ -112,7 +98,12 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
 
   return (
     <form
-      onSubmit={handleSubmit((data) => onSubmit(data))}
+      onSubmit={ handleSubmit((data) => {
+        if(data.image) {
+          setInvalidImage(true);
+        }
+        onSubmit(data);
+      })}
       className="flex min-w-[300px] flex-col items-center gap-3 bg-base-100 p-4 text-primary"
     >
       {/* Título */}
@@ -125,7 +116,6 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
         />
         {errors.title && <span className="text-accent">Required field</span>}
       </div>
-
       {/* Descripción */}
       <div className="flex w-full flex-col">
         <label>Description:</label>
@@ -138,7 +128,6 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
           <span className="text-accent">Required field</span>
         )}
       </div>
-
       {/* Imagen */}
       <div className="flex w-full flex-col">
         <label>Image:</label>
@@ -146,6 +135,7 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
           onDrop={(acceptedFiles) => {
             register("image", { required: true, value: acceptedFiles[0] });
             setValue("image", acceptedFiles[0]);
+            setInvalidImage(false);
           }}
         >
           {({ getRootProps, getInputProps }) => (
@@ -157,6 +147,11 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
             </section>
           )}
         </Dropzone>
+        {
+          (invalidImage === true)
+          ? <p className="text-red-500">Required field</p>
+          : <></>
+        }
       </div>
       {/* Categoría */}
       <div className="flex w-full flex-col">
@@ -175,15 +170,31 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
       <div className="flex w-full flex-col">
         <label>Price:</label>
         <input
-          type="text"
+          type="number"
           className="input-bordered input w-full"
-          {...register("price", { required: true })}
+          {...register("price", { required: true, min: 0 })}
         />
-        {errors.description && (
-          <span className="text-accent">Required field</span>
+        {errors.price && (
+          <span className="text-accent">Invalid price</span>
         )}
       </div>
-      <input type="submit" className="cursor-pointer" />
+      {/* Royalties */}
+      <div className="flex w-full flex-col">
+        <label>Royalties:</label>
+        <input
+          type="number"
+          className="input-bordered input w-full"
+          {...register("royalties", { required: true, min: 0, max: 25 })}
+        />
+        {errors.royalties && (
+          <span className="text-accent">Invalid royalties</span>
+        )}
+      </div>
+      {
+        submitLoading
+        ? <span className="loading loading-spinner loading-lg"></span>
+        : <input type="submit" className="cursor-pointer"/>
+      }  
     </form>
   );
 };

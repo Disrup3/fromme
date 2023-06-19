@@ -1,5 +1,5 @@
 import { createPublicClient, getContract, http } from "viem";
-import { sepolia } from "wagmi/chains";
+import { sepolia } from "wagmi/chains"; 
 import { nftfactoryContract } from "./contracts";
 
 export const addresses = {
@@ -20,3 +20,5 @@ export const NFTFactoryContract = getContract({
     abi: nftfactoryContract.abi,
     publicClient: client,
 });
+
+export const NFTFactory_abi = NFTFactoryContract.abi;
