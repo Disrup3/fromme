@@ -66,10 +66,6 @@ const Home: NextPage = () => {
           </div>
           <Carousel items={itemsCarousel} />
         </div>
-        <div className="bg-base-100 text-black">BASE-100 COLOR</div>
-        <div className="bg-primary text-white">PRIMARY COLOR</div>
-        <div className="bg-secondary text-white">SECONDARY COLOR</div>
-        <div className="bg-accent text-white">ACCENT COLOR</div>
       </main>
     </>
   );
