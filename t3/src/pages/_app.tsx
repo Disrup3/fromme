@@ -5,7 +5,11 @@ import { api } from "~/utils/api";
 import "~/styles/globals.css";
 // Imports de RainbowKit
 import "@rainbow-me/rainbowkit/styles.css";
-import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import {
+  getDefaultWallets,
+  lightTheme,
+  RainbowKitProvider,
+} from "@rainbow-me/rainbowkit";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { mainnet, polygon, optimism, arbitrum, sepolia } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
@@ -37,25 +41,31 @@ const MyApp: AppType<{ session: Session | null }> = ({
   return (
     <SessionProvider session={session}>
       <WagmiConfig config={wagmiConfig}>
-        <RainbowKitProvider chains={chains}>
-        <Toaster
-          position="bottom-center"
-          reverseOrder={false}
-          gutter={8}
-          containerClassName=""
-          containerStyle={{}}
-          toastOptions={{
-            className: '',
-            duration: 5000,
-            style: {
-              background: '#363636',
-              color: '#fff',
-            },
-            success: {
-              duration: 3000,
-            },
-          }}
-        />
+        <RainbowKitProvider
+          chains={chains}
+          theme={lightTheme({
+            borderRadius: "large",
+            accentColor: "#6832F3",
+          })}
+        >
+          <Toaster
+            position="bottom-center"
+            reverseOrder={false}
+            gutter={8}
+            containerClassName=""
+            containerStyle={{}}
+            toastOptions={{
+              className: "",
+              duration: 5000,
+              style: {
+                background: "#363636",
+                color: "#fff",
+              },
+              success: {
+                duration: 3000,
+              },
+            }}
+          />
           <MainLayout>
             <Component {...pageProps} />
           </MainLayout>

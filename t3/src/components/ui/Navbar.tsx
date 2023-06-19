@@ -46,9 +46,10 @@ const Navbar = () => {
         >
           Upload
         </Link>
-        <button className="rounded-full border-2 border-black px-4 py-2 duration-700 hover:border-base-100">
+        <ConnectButton label="Conectar Cartera" />
+        {/* <button className="rounded-full border-2 border-black px-4 py-2 duration-700 hover:border-base-100">
           Conetar Cartera
-        </button>
+        </button> */}
       </div>
     </div>
   );
