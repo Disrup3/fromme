@@ -11,6 +11,8 @@ import { mainnet, polygon, optimism, arbitrum, sepolia } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 import toast, { Toaster } from 'react-hot-toast';
+import MainLayout from "~/components/layouts/MainLayout";
+
 
 const { chains, publicClient } = configureChains(
   [mainnet, polygon, optimism, arbitrum, sepolia], // TODO: Decidir qué cadenas querremos.
@@ -61,6 +63,11 @@ const MyApp: AppType<{ session: Session | null }> = ({
           }}
         />
           <Component {...pageProps} />
+
+          <MainLayout>
+            <Component {...pageProps} />
+          </MainLayout>
+
         </RainbowKitProvider>
       </WagmiConfig>
     </SessionProvider>
