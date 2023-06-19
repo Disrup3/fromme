@@ -46,7 +46,6 @@ const MyApp: AppType<{ session: Session | null }> = ({
           containerClassName=""
           containerStyle={{}}
           toastOptions={{
-            // Define default options
             className: '',
             duration: 5000,
             style: {
@@ -55,19 +54,12 @@ const MyApp: AppType<{ session: Session | null }> = ({
             },
             success: {
               duration: 3000,
-              /*theme: {
-                primary: 'green',
-                secondary: 'black',
-              },*/
             },
           }}
         />
-          <Component {...pageProps} />
-
           <MainLayout>
             <Component {...pageProps} />
           </MainLayout>
-
         </RainbowKitProvider>
       </WagmiConfig>
     </SessionProvider>
