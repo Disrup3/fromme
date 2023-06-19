@@ -6,7 +6,7 @@ import { RxMagnifyingGlass } from "react-icons/rx";
 
 const Navbar = () => {
   return (
-    <div className="flex h-24 justify-between border-2 border-black px-10">
+    <div className="flex h-24 justify-between border-black px-10">
       <div className="flex items-center gap-16">
         <Image
           src={"/images/logo-mobile.svg"}
@@ -34,7 +34,7 @@ const Navbar = () => {
         </div>
       </div>
       <div className="flex items-center gap-3 font-semibold">
-        <button className="rounded-full border-2 border-secondary p-3 duration-700 hover:bg-primary hover:text-base-100">
+        <button className="rounded-full border-2 border-secondary p-3 duration-700 hover:border-primary hover:bg-primary hover:text-base-100">
           <BsTranslate />
         </button>
         <Link
