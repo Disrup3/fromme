@@ -17,16 +17,16 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
     setValue,
   } = useForm<FormCreate>();
 
-  const [ submitLoading, setSubmitLoading ] = useState<boolean>(false);
+
   const [ invalidImage, setInvalidImage ] = useState<boolean>(false);
 
   const { // Web hook para interactuar con el contrato
-    write,
+    write, isLoading, changeIsLoading,
   } = useNftfactoryContract({
     _tokenURI: "",
     _feeNumerator: BigInt(0),
     onSuccessfulCreateNFT: () => {
-      setSubmitLoading(false);
+      // setSubmitLoading(false);
       setInvalidImage(false);
     },
   });
@@ -38,7 +38,7 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
   const onSubmit: SubmitHandler<FormCreate> = async (data) => {
     const token = process.env.NEXT_PUBLIC_NFT_STORAGE_TOKEN || "";
     try {
-      setSubmitLoading(true); // Reconocer cuando está procesandose una transacción en Metamask para mostrarlo con un loading
+      // setSubmitLoading(true); // Reconocer cuando está procesandose una transacción en Metamask para mostrarlo con un loading
       const uriJson = {
         name: data.title!,
         description: data.description!,
@@ -51,7 +51,7 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
       // console.log({ "metadata.json contents with IPFS gateway URLs": metadata.embed() });
       write?.();
     } catch (err: any) {
-      setSubmitLoading(false);
+      // setSubmitLoading(false);
       console.log(err);
     }
   };
@@ -102,6 +102,7 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
         if(data.image) {
           setInvalidImage(true);
         }
+        changeIsLoading(true);
         onSubmit(data);
       })}
       className="flex min-w-[300px] flex-col items-center gap-3 bg-base-100 p-4 text-primary"
@@ -191,7 +192,7 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
         )}
       </div>
       {
-        submitLoading
+        isLoading
         ? <span className="loading loading-spinner loading-lg"></span>
         : <input type="submit" className="cursor-pointer"/>
       }  
