@@ -27,6 +27,7 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
     _feeNumerator: BigInt(0),
     onSuccessfulCreateNFT: () => {
       setSubmitLoading(false);
+      setInvalidImage(false);
     },
   });
 
@@ -43,8 +44,9 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
         description: data.description!,
         image: data.image!,
       }
+      setInvalidImage(false);
       const metadata = await new NFTStorage({ token }).store(uriJson);
-      console.log({ "IPFS URL for the metadata": metadata.url });
+      // console.log({ "IPFS URL for the metadata": metadata.url });
       // console.log({ "metadata.json contents": metadata.data });
       // console.log({ "metadata.json contents with IPFS gateway URLs": metadata.embed() });
       write?.();
@@ -174,6 +176,18 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
         />
         {errors.price && (
           <span className="text-accent">Invalid price</span>
+        )}
+      </div>
+      {/* Royalties */}
+      <div className="flex w-full flex-col">
+        <label>Royalties:</label>
+        <input
+          type="number"
+          className="input-bordered input w-full"
+          {...register("royalties", { required: true, min: 0, max: 25 })}
+        />
+        {errors.royalties && (
+          <span className="text-accent">Invalid royalties</span>
         )}
       </div>
       {

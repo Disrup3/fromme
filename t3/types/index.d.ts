@@ -11,4 +11,5 @@ interface FormCreate {
     image?: File;
     category?: string;
     price?: number;
+    royalties?: number;
 };
