@@ -5,15 +5,21 @@ import { api } from "~/utils/api";
 import "~/styles/globals.css";
 // Imports de RainbowKit
 import "@rainbow-me/rainbowkit/styles.css";
-import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import {
+  getDefaultWallets,
+  lightTheme,
+  RainbowKitProvider,
+} from "@rainbow-me/rainbowkit";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { mainnet, polygon, optimism, arbitrum, sepolia } from "wagmi/chains";
+import { mainnet, polygonMumbai, polygon } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
+import toast, { Toaster } from "react-hot-toast";
+import MainLayout from "~/components/layouts/MainLayout";
 
 const { chains, publicClient } = configureChains(
-  [mainnet, polygon, optimism, arbitrum, sepolia], // TODO: Decidir qué cadenas querremos.
-  [alchemyProvider({ apiKey: process.env.ALCHEMY_ID! }), publicProvider()] // TODO: Añadir ALCHEMY_ID a .env
+  [mainnet, polygonMumbai, polygon], // TODO: Decidir qué cadenas querremos.
+  [publicProvider()]
 );
 
 const { connectors } = getDefaultWallets({
@@ -35,8 +41,34 @@ const MyApp: AppType<{ session: Session | null }> = ({
   return (
     <SessionProvider session={session}>
       <WagmiConfig config={wagmiConfig}>
-        <RainbowKitProvider chains={chains}>
-          <Component {...pageProps} />
+        <RainbowKitProvider
+          chains={chains}
+          theme={lightTheme({
+            borderRadius: "large",
+            accentColor: "#6832F3",
+          })}
+        >
+          <Toaster
+            position="bottom-center"
+            reverseOrder={false}
+            gutter={8}
+            containerClassName=""
+            containerStyle={{}}
+            toastOptions={{
+              className: "",
+              duration: 5000,
+              style: {
+                background: "#363636",
+                color: "#fff",
+              },
+              success: {
+                duration: 3000,
+              },
+            }}
+          />
+          <MainLayout>
+            <Component {...pageProps} />
+          </MainLayout>
         </RainbowKitProvider>
       </WagmiConfig>
     </SessionProvider>
