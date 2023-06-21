@@ -48,7 +48,7 @@ const UserProfile = () => {
           <p>Total earned: {nfts.length}</p>
           <p>Last sale: {nfts.length}</p>
         </div>
-        <div className="my-5 flex flex-wrap justify-center gap-3">
+        <div className="my-5 flex flex-wrap justify-center gap-3 p-2">
           {nfts?.map((nft, i) => (
             <Image
               key={i}
