@@ -105,7 +105,7 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
         changeIsLoading(true);
         onSubmit(data);
       })}
-      className="flex min-w-[300px] flex-col items-center gap-3 bg-base-100 p-4 text-primary"
+      className="flex min-w-[300px] flex-col items-center gap-3 bg-base-100 p-4 mb-[7vh] lg:mb-4 text-primary"
     >
       {/* Título */}
       <div className="flex w-full flex-col">
