@@ -7,9 +7,6 @@ import { ConnectButton } from "@rainbow-me/rainbowkit"; //TEST
 import GetStarted from "~/components/ui/GetStarted";
 import HeroSection from "~/components/ui/HeroSection";
 import Carousel from "~/components/ui/Carousel";
-import Footer from "~/components/ui/Footer";
-import Navbar from "~/components/ui/Navbar";
-import MainLayout from "~/components/layouts/MainLayout";
 
 const Home: NextPage = () => {
   const itemsCarousel: CarouselItem[] = [
@@ -44,6 +41,9 @@ const Home: NextPage = () => {
       precio: 15,
     },
   ];
+
+  const { data: session, status } = useSession();
+  console.log("session", session);
 
   return (
     <>

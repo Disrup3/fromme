@@ -5,9 +5,13 @@ import {
   type NextAuthOptions,
   type DefaultSession,
 } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
 import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { getCsrfToken } from "next-auth/react";
+import { SiweMessage } from "siwe";
+import { IncomingMessage } from "http";
+import type { CtxOrReq } from "next-auth/client/_utils";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -35,7 +39,9 @@ declare module "next-auth" {
  *
  * @see https://next-auth.js.org/configuration/options
  */
-export const authOptions: NextAuthOptions = {
+export const authOptions: (ctxReq: CtxOrReq) => NextAuthOptions = ({
+  req,
+}) => ({
   callbacks: {
     session: ({ session, user }) => ({
       ...session,
@@ -47,30 +53,72 @@ export const authOptions: NextAuthOptions = {
   },
   adapter: PrismaAdapter(prisma),
   providers: [
-    DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
-    }),
-    /**
-     * ...add more providers here.
-     *
-     * Most other providers require a bit more work than the Discord provider. For example, the
-     * GitHub provider requires you to add the `refresh_token_expires_in` field to the Account
-     * model. Refer to the NextAuth.js docs for the provider you want to use. Example:
-     *
-     * @see https://next-auth.js.org/providers/github
-     */
-  ],
-};
+    CredentialsProvider({
+      async authorize(credentials) {
+        try {
+          const siwe = new SiweMessage(
+            JSON.parse(credentials?.message || "{}")
+          );
 
+          const nextAuthUrl =
+            process.env.NEXTAUTH_URL ||
+            (process.env.VERCEL_URL
+              ? `https://${process.env.VERCEL_URL}`
+              : null);
+          if (!nextAuthUrl) {
+            return null;
+          }
+
+          const nextAuthHost = new URL(nextAuthUrl).host;
+          if (siwe.domain !== nextAuthHost) {
+            return null;
+          }
+
+          if (siwe.nonce !== (await getCsrfToken({ req }))) {
+            return null;
+          }
+
+          await siwe.verify({ signature: credentials?.signature || "" });
+          return {
+            id: siwe.address,
+          };
+        } catch (e) {
+          return null;
+        }
+      },
+      credentials: {
+        message: {
+          label: "Message",
+          placeholder: "0x0",
+          type: "text",
+        },
+        signature: {
+          label: "Signature",
+          placeholder: "0x0",
+          type: "text",
+        },
+      },
+      name: "Ethereum",
+    }),
+  ],
+  secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    strategy: "jwt",
+  },
+});
+
+// Auth Session
+// ========================================================
 /**
  * Wrapper for `getServerSession` so that you don't need to import the `authOptions` in every file.
  *
  * @see https://next-auth.js.org/configuration/nextjs
  */
-export const getServerAuthSession = (ctx: {
+export const getServerAuthSession = async (ctx: {
   req: GetServerSidePropsContext["req"];
   res: GetServerSidePropsContext["res"];
 }) => {
-  return getServerSession(ctx.req, ctx.res, authOptions);
+  // Changed from authOptions to authOption(ctx)
+  // This allows use to retrieve the csrf token to verify as the nonce
+  return getServerSession(ctx.req, ctx.res, authOptions(ctx));
 };
