@@ -17,6 +17,8 @@ error AlreadyAllowed();
 error NotOwner();
 error AmountMustBeAboveZero();
 error NotApprovedForMarketplace();
+error PreviousAuctionStillOpen();
+error PreviousAuctionNotClaimed();
 
 contract FrommeMarketplace is Ownable{
 
@@ -29,6 +31,7 @@ contract FrommeMarketplace is Ownable{
         address currentBuyer;
         uint256 startingTime;
         uint256 endTime;
+        string state;
     }
     struct Listing {
         uint256 tokenId;
@@ -102,13 +105,6 @@ contract FrommeMarketplace is Ownable{
     mapping(uint256 => Listing) private listings; // only one listing per nft at the same time
     mapping(uint256 => Offer) private offers; // only one offer per nft at the same time - keep higher offer
 
-    modifier onlyAllowed(address _address) {
-        if (!allowedAddress[_address]) {
-            revert NotAllowed();
-        }
-        _;
-    }
-
     modifier onlyNftOwner(
         uint256 _tokenId,
         address _address
@@ -127,23 +123,38 @@ contract FrommeMarketplace is Ownable{
     }
 
     // MAIN FUNCTIONS
-    function createAuction(uint _tokenId, uint _startingAmount, uint _durationInSeconds) external onlyAllowed(msg.sender) onlyNftOwner(_tokenId, msg.sender) {
+    function createAuction(uint _tokenId, uint _startingAmount, uint _durationInSeconds) external onlyNftOwner(_tokenId, msg.sender) {
         if (_startingAmount <= 0) {
             revert AmountMustBeAboveZero();
         }
         if (nftContract.getApproved(_tokenId) != address(this)) {
             revert NotApprovedForMarketplace();
         }
+
+        // startingAmount > 0 = there has been a previous auction
+        if (auctions[_tokenId].startingAmount > 0) {
+            // check if still open
+            if (block.timestamp < auctions[_tokenId].endTime) {
+                revert PreviousAuctionStillOpen();
+            
+            // else check if there was any bid and was claimed, aka, state = BID 
+            // (both CREATED and CLAIMED mean that there was no bid and can be created again, or that was already claimed)
+            } else if (keccak256(abi.encodePacked((bytes(auctions[_tokenId].state)))) == keccak256(abi.encodePacked(("BID")))) {
+                revert PreviousAuctionNotClaimed();
+            }
+        } 
+
         // The duration in seconds is added to the current time to get the endTime
-        auctions[_tokenId] = Auction(_tokenId, msg.sender, _startingAmount, _startingAmount, address(0), block.timestamp, block.timestamp + _durationInSeconds);
+        auctions[_tokenId] = Auction(_tokenId, msg.sender, _startingAmount, _startingAmount, address(0), block.timestamp, block.timestamp + _durationInSeconds, 'CREATED');
         emit AunctionCreated(_tokenId, msg.sender, _startingAmount, block.timestamp, block.timestamp + _durationInSeconds);
     }
 
-    function addBetAmount(uint _tokenId) external payable {
-        require(block.timestamp < auctions[_tokenId].endTime, "Auction is closed");
-        require(msg.value > auctions[_tokenId].currentAmount, "Bet should be higher than current price");
+    function addBidAmount(uint _tokenId) external payable {
+        require(block.timestamp <= auctions[_tokenId].endTime, "Auction is closed");
+        require(msg.value > auctions[_tokenId].currentAmount, "Bet should be higher than current amount");
         auctions[_tokenId].currentAmount = msg.value;
         auctions[_tokenId].currentBuyer = msg.sender;
+        auctions[_tokenId].state = 'BID';
         emit BetAdded(_tokenId, msg.value, msg.sender);
     }
 
@@ -163,6 +174,8 @@ contract FrommeMarketplace is Ownable{
         (bool success, ) = auctions[_tokenId].seller.call{value: auctions[_tokenId].currentAmount - amountRoyalty}("");
         require(success, "Transfer failed");
 
+        auctions[_tokenId].state = 'CLAIMED';
+
         emit AuctionClaimed(_tokenId, auctions[_tokenId].seller, msg.sender, auctions[_tokenId].currentAmount);
     }
 
@@ -181,6 +194,7 @@ contract FrommeMarketplace is Ownable{
 
     function buyItem(uint _tokenId) external payable {
         require(msg.value >= listings[_tokenId].amount, "Amount not enough");
+        require(block.timestamp <= listings[_tokenId].endTime, "Listing has ended");
         
         nftContract.transferFrom(listings[_tokenId].seller, msg.sender, _tokenId); // sends NFT to buyer
 
@@ -208,6 +222,7 @@ contract FrommeMarketplace is Ownable{
 
     function acceptOffer(uint _tokenId) external onlyNftOwner(_tokenId, msg.sender) {
         require(offers[_tokenId].amount > 0, "No offer made");
+        require(block.timestamp <= offers[_tokenId].endTime, "Offer has ended");
         if (nftContract.getApproved(_tokenId) != address(this)) {
             revert NotApprovedForMarketplace();
         }
@@ -229,13 +244,6 @@ contract FrommeMarketplace is Ownable{
 
 
     // Other functions
-    function addAllowedAddress(address _address) external onlyOwner {
-        if (allowedAddress[_address]) {
-            revert AlreadyAllowed();
-        }
-        allowedAddress[_address] = true;
-    }
-
     function isTokenIdAllowed(uint _tokenId) external view returns(bool) {
         return nftContract.getApproved(_tokenId) == address(this);
     }
