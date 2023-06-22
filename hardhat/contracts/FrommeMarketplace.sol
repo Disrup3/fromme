@@ -151,7 +151,7 @@ contract FrommeMarketplace is Ownable{
 
     function addBidAmount(uint _tokenId) external payable {
         require(block.timestamp <= auctions[_tokenId].endTime, "Auction is closed");
-        require(msg.value > auctions[_tokenId].currentAmount, "Bet should be higher than current amount");
+        require(msg.value > auctions[_tokenId].currentAmount, "Bid should be higher than current amount");
         auctions[_tokenId].currentAmount = msg.value;
         auctions[_tokenId].currentBuyer = msg.sender;
         auctions[_tokenId].state = 'BID';
