@@ -15,5 +15,18 @@
     "@openzeppelin/contracts": "^4.9.1",
     "dotenv": "^16.1.4",
     "hardhat-ethers": "^1.0.1"
-  }
+  },
+  "name": "hardhat_project_name",
+  "description": "This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

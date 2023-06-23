@@ -14,8 +14,6 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Royalty.sol";
 
-
-
 contract NFTFactory is ERC721Royalty, ERC721URIStorage, Ownable {
 
     event NFTCreated(
