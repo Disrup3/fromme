@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAnglesDown } from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
 
 const HeroSection = () => {
   const handleButtonClick = () => {
@@ -19,9 +20,9 @@ const HeroSection = () => {
       <h1 className="text-6xl font-bold"><span className="text-primary">New World </span>of Digital Collectibles</h1>
       <h2 className="text-xl font-semibold">Buy and sell NFTs from the world's top artists</h2>
       <div className="flex justify-center gap-7">
-        <button className="rounded-full bg-primary px-7 py-3 text-xs font-semibold text-base-100">
+        <Link className="rounded-full bg-primary px-7 py-3 text-xs font-semibold text-base-100" href={"/explore"}>
           Start Exploring
-        </button>
+        </Link>
         <button className="rounded-full px-7 py-3 text-xs font-semibold border-black border-2 text-black">
           Learn More
         </button>
