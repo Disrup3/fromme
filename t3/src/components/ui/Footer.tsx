@@ -1,6 +1,6 @@
 const Footer = () => {
     return (
-    <footer className="footer pt-10 pb-2 px-[5vw] bg-primary text-white text-lg font-bold flex flex-col mt-20">
+    <footer className="footer pt-10 pb-2 px-[5vw] bg-primary text-white text-lg font-bold flex flex-col">
       <div className="flex flex-wrap items-start justify-center w-full">
         <div className="flex flex-col items-center text-center px-[20vw] mb-5 w-full"> 
           <img src="images/logo-footer.svg" alt="fromme" className="w-[250px]"></img>
