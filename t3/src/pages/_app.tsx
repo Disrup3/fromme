@@ -53,6 +53,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
           getSiweMessageOptions={getSiweMessageOptions}
         >
           <RainbowKitProvider
+            coolMode
             chains={chains}
             theme={lightTheme({
               borderRadius: "large",
