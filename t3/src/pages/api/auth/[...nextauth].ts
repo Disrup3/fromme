@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { getCsrfToken } from "next-auth/react";
 import { SiweMessage } from "siwe";
+import { prisma } from "~/server/db";
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
@@ -26,6 +27,7 @@ export default async function auth(req: any, res: any) {
           const siwe = new SiweMessage(
             JSON.parse(credentials?.message || "{}")
           );
+          console.log(siwe);
           const nextAuthUrl = new URL(process.env.NEXTAUTH_URL!);
 
           const result = await siwe.verify({
@@ -35,6 +37,29 @@ export default async function auth(req: any, res: any) {
           });
 
           if (result.success) {
+            // Check if user exists
+            let user = await prisma.user.findUnique({
+              where: {
+                address: siwe.address,
+              },
+            });
+            // Create new user if doesn't exist
+            if (!user) {
+              user = await prisma.user.create({
+                data: {
+                  address: siwe.address,
+                },
+              });
+              // create account
+              await prisma.account.create({
+                data: {
+                  userId: user.id,
+                  type: "credentials",
+                  provider: "Ethereum",
+                  providerAccountId: siwe.address,
+                },
+              });
+            }
             return {
               id: siwe.address,
             };
