@@ -29,7 +29,7 @@ const NFTcard: FC<Props> = ({ item }) => {
                 {isHovered && (
                     <div className="absolute top-0 left-0 w-full h-full flex flex-wrap justify-center items-center bg-black bg-opacity-50">
                         <div className="flex w-full justify-around items-center">
-                            <button className="btn btn-primary">{item.price.toFixed(2)} EUR</button>
+                            <p className="btn btn-primary cursor-default">{item.price.toFixed(2)} EUR</p>
                             <button className="bg-white p-5 rounded-full w-8 h-8 flex justify-center items-center">
                                 <FontAwesomeIcon icon={faHeart} />
                             </button>

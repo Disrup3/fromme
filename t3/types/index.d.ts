@@ -22,3 +22,8 @@ interface ExploreItem {
     stock: number;
     price: number;
 }
+
+interface selectable {
+    name: string;
+    selected: boolean;
+}
