@@ -1,8 +1,5 @@
-import { PrismaClient } from "../src/client/generate";
-import axios from "axios"; 
-
-const prisma = new PrismaClient();
-
+import { prisma } from "../db"
+import axios from "axios";
 export const callApi = async (endpoint: string, data: any, isDead = false) => {
   try {
     await axios.post(`${process.env.API_ENDPOINT}${endpoint}`, data);
