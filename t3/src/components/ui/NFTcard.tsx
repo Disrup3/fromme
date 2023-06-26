@@ -31,7 +31,7 @@ const NFTcard: FC<Props> = ({ item }) => {
                         <div className="flex w-full justify-around items-center">
                             <p className="btn btn-primary cursor-default">{item.price.toFixed(2)} EUR</p>
                             <button className="bg-white p-5 rounded-full w-8 h-8 flex justify-center items-center">
-                                <FontAwesomeIcon icon={faHeart} />
+                                <FontAwesomeIcon icon={faHeart} style={{ color: 'black' }}/>
                             </button>
                         </div>
                         <button className="btn btn-primary">Purchase now</button>
