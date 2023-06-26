@@ -118,7 +118,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\repositorios\\fromme\\indexer\\src\\src\\client\\generate",
+      "value": "D:\\Daniel\\Desktop\\Disrup3\\Fromme\\fromme\\Indexer\\src\\client\\generate",
       "fromEnvVar": null
     },
     "config": {
