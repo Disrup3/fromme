@@ -1,7 +1,9 @@
 import { NFTCreatedEvent } from "../event_types/nftfactorytypes";
 import { ethers } from "ethers";
 import {nftfactoryContract} from "../constants/contractsData";
+import { callApi } from "../utils/apiUtils";
 import { PrismaClient } from "../client/generate";
+
 
 const provider = new ethers.providers.JsonRpcProvider(
   //utilizar variables de entorno posteriormente
@@ -14,7 +16,7 @@ const loadMarketplaceContract = () => {
   return new ethers.Contract(address, abi, provider);
 };
 
-const callApi = require("../utils/apiUtils");
+
 export const processFactoryTrackerEvents = async (startFromBlock:number, prisma:PrismaClient) => {
     const currentBlock = await provider.getBlockNumber();
     const marketplaceSC = loadMarketplaceContract();
@@ -35,7 +37,7 @@ export const processFactoryTrackerEvents = async (startFromBlock:number, prisma:
   
     try {
       const pastEvents = await marketplaceSC.queryFilter(
-        "*",
+        "NFTCreated",
         startFromBlock,
         currentBlock
       );

@@ -1,4 +1,5 @@
 require("dotenv").config();
+import { Dead_events_queue } from "./client/generate";
 import { nftfactoryContract } from "./constants/contractsData";
 import { prisma } from "./db"
 import { processFactoryTrackerEvents } from "./services/nftFactoryTracker";
@@ -36,9 +37,9 @@ const processDeadEvents = async () => {
   if(!deadEvents.length) return console.log("No hay que recuperar");
   // de ser asi, llamar a callApi con esos datos
   try {
-    deadEvents.forEach(async (event:any) => {
-      await callApi(event.eventName, JSON.parse(event.data), true);
-      await prisma.dead_events_queue.delete({ where: { id: event.id } });
+    deadEvents.forEach(async (event: Dead_events_queue) => {
+      const success = await callApi(event.eventName, JSON.parse(event.data), true);
+      if(success) await prisma.dead_events_queue.delete({where: {id: event.id}})
     });
   } catch (error) {
     console.log(error);
