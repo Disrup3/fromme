@@ -73,3 +73,11 @@ model Nft {
     tokenUri        String
     feeNumerator    Int
 }
+
+model ListedNft {
+    tokenId         Int @unique
+    seller          String
+    amount          Int
+    startingTime    Int
+    endTime         Int
+}
