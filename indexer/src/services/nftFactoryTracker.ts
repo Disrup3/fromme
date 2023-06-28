@@ -1,6 +1,6 @@
 import { NFTCreatedEvent } from "../event_types/nftfactorytypes";
 import { ethers } from "ethers";
-import {nftfactoryContract} from "../constants/contractsData";
+import {nftFactoryContract} from "../constants/contractsData";
 import { callApi } from "../utils/apiUtils";
 import { PrismaClient } from "../client/generate";
 
@@ -11,8 +11,8 @@ const provider = new ethers.providers.JsonRpcProvider(
 );
 
 const loadMarketplaceContract = () => {
-  const abi = nftfactoryContract.abi;
-  const address = nftfactoryContract.address;
+  const abi = nftFactoryContract.abi;
+  const address = nftFactoryContract.address;
   return new ethers.Contract(address, abi, provider);
 };
 
@@ -67,7 +67,7 @@ export const processFactoryTrackerEvents = async (startFromBlock:number, prisma:
           await handleMarketplaceEvents(batches[runBatch]);
           await prisma.tracker_State.update({
             where: {
-              contractAddress: nftfactoryContract.address,
+              contractAddress: nftFactoryContract.address,
             },
             data: {
               lastBlockProcessed: lastBlockProcessed,
@@ -95,5 +95,5 @@ const NFTCreated = async (event:NFTCreatedEvent) => {
       tokenUri: event.args.tokenUri,
     };
     console.log(eventData);
-    await callApi("itemListed", eventData);
+    await callApi("nftCreated", eventData);
   };
