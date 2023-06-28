@@ -1,6 +1,6 @@
 require("dotenv").config();
 import { Dead_events_queue } from "./client/generate";
-import { nftfactoryContract } from "./constants/contractsData";
+import { nftFactoryContract } from "./constants/contractsData";
 import { prisma } from "./db"
 import { processFactoryTrackerEvents } from "./services/nftFactoryTracker";
 import { callApi } from "./utils/apiUtils";
@@ -14,7 +14,7 @@ const connect = async () => {
   if (!result.length) {
     await prisma.tracker_State.create({
       data: {
-        contractAddress: nftfactoryContract.address,
+        contractAddress: nftFactoryContract.address,
         lastBlockProcessed: 0,
         chainId: CHAIN_ID,
       },
@@ -38,6 +38,7 @@ const processDeadEvents = async () => {
   // de ser asi, llamar a callApi con esos datos
   try {
     deadEvents.forEach(async (event: Dead_events_queue) => {
+      console.log(event.eventName)
       const success = await callApi(event.eventName, JSON.parse(event.data), true);
       if(success) await prisma.dead_events_queue.delete({where: {id: event.id}})
     });
