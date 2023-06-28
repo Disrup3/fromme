@@ -36,7 +36,7 @@ const Carousel: FC<Props> = ({ items }) => {
   }, [currentSlide]);
 
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex justify-center mb-[8vh] items-center">
       <button className="mr-2 border border-gray-400 rounded-full w-[30px] h-[30px]" onClick={handleClickPrev}>❮</button>
       <div className="flex items-start w-5/6">
         {displayingItems.map((item, key) => (

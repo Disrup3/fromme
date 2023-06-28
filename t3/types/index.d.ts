@@ -13,3 +13,17 @@ interface FormCreate {
     price?: number;
     royalties?: number;
 };
+
+interface ExploreItem {
+    image: string;
+    title: string;
+    creator: string;
+    favorites: number;
+    stock: number;
+    price: number;
+}
+
+interface selectable {
+    name: string;
+    selected: boolean;
+}

@@ -6,7 +6,7 @@ const create = () => {
   const [form, setForm] = useState({} as FormCreate);
 
   return (
-    <div>
+    <div className="pb-[8vh]">
       <h1 className="w-full text-center text-4xl font-bold my-10">Create your next NFT</h1>
       <div className="flex flex-wrap w-full justify-center items-center my-5">
         <CreateNFTCollection

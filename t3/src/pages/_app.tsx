@@ -4,6 +4,10 @@ import { type AppType } from "next/app";
 import { api } from "~/utils/api";
 import "~/styles/globals.css";
 // Imports de RainbowKit
+import {
+  GetSiweMessageOptions,
+  RainbowKitSiweNextAuthProvider,
+} from "@rainbow-me/rainbowkit-siwe-next-auth";
 import "@rainbow-me/rainbowkit/styles.css";
 import {
   getDefaultWallets,
@@ -34,6 +38,10 @@ const wagmiConfig = createConfig({
   publicClient,
 });
 
+const getSiweMessageOptions: GetSiweMessageOptions = () => ({
+  statement: "Log in Fromme",
+});
+
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
@@ -41,35 +49,40 @@ const MyApp: AppType<{ session: Session | null }> = ({
   return (
     <SessionProvider session={session}>
       <WagmiConfig config={wagmiConfig}>
-        <RainbowKitProvider
-          chains={chains}
-          theme={lightTheme({
-            borderRadius: "large",
-            accentColor: "#6832F3",
-          })}
+        <RainbowKitSiweNextAuthProvider
+          getSiweMessageOptions={getSiweMessageOptions}
         >
-          <Toaster
-            position="bottom-center"
-            reverseOrder={false}
-            gutter={8}
-            containerClassName=""
-            containerStyle={{}}
-            toastOptions={{
-              className: "",
-              duration: 5000,
-              style: {
-                background: "#363636",
-                color: "#fff",
-              },
-              success: {
-                duration: 3000,
-              },
-            }}
-          />
-          <MainLayout>
-            <Component {...pageProps} />
-          </MainLayout>
-        </RainbowKitProvider>
+          <RainbowKitProvider
+            coolMode
+            chains={chains}
+            theme={lightTheme({
+              borderRadius: "large",
+              accentColor: "#6832F3",
+            })}
+          >
+            <Toaster
+              position="bottom-center"
+              reverseOrder={false}
+              gutter={8}
+              containerClassName=""
+              containerStyle={{}}
+              toastOptions={{
+                className: "",
+                duration: 5000,
+                style: {
+                  background: "#363636",
+                  color: "#fff",
+                },
+                success: {
+                  duration: 3000,
+                },
+              }}
+            />
+            <MainLayout>
+              <Component {...pageProps} />
+            </MainLayout>
+          </RainbowKitProvider>
+        </RainbowKitSiweNextAuthProvider>
       </WagmiConfig>
     </SessionProvider>
   );

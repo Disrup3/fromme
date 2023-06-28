@@ -2,12 +2,12 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+    provider        = "prisma-client-js"
     previewFeatures = ["jsonProtocol"]
 }
 
 datasource db {
-    provider = "sqlite"
+    provider = "postgresql"
     // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
     // Further reading:
     // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
@@ -52,6 +52,7 @@ model User {
     id            String    @id @default(cuid())
     name          String?
     email         String?   @unique
+    address       String?   @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
@@ -64,4 +65,19 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Nft {
+    tokenId      Int    @id @unique
+    creator      String
+    tokenUri     String
+    feeNumerator Int
+}
+
+model ListedNft {
+    tokenId      Int     @unique
+    seller       String?
+    amount       Int?
+    startingTime Int
+    endTime      Int
 }
