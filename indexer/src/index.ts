@@ -1,9 +1,10 @@
 require("dotenv").config();
+import { Dead_events_queue } from "./client/generate";
 import { nftfactoryContract } from "./constants/contractsData";
-import { PrismaClient } from "./src/client/generate";
-import { nftFactoryTracker } from "./services/nftFactoryTracker";
+import { prisma } from "./db"
+import { processFactoryTrackerEvents } from "./services/nftFactoryTracker";
 import { callApi } from "./utils/apiUtils";
-const prisma = new PrismaClient();
+
 
 const CHAIN_ID = process.env.NETWORK_CHAINID ?? "80001";
 
@@ -22,6 +23,7 @@ const connect = async () => {
 
   const trackContractCallback = async () => {
     const lastBlocks = await prisma.tracker_State.findMany();
+    await processFactoryTrackerEvents(lastBlocks[0].lastBlockProcessed, prisma);
     await processDeadEvents();
     setTimeout(() => trackContractCallback(), 2000); // Recursividad de trackeo
   };
@@ -35,9 +37,9 @@ const processDeadEvents = async () => {
   if(!deadEvents.length) return console.log("No hay que recuperar");
   // de ser asi, llamar a callApi con esos datos
   try {
-    deadEvents.forEach(async (event) => {
-      await callApi(event.eventName, JSON.parse(event.data), true);
-      await prisma.dead_events_queue.delete({ where: { id: event.id } });
+    deadEvents.forEach(async (event: Dead_events_queue) => {
+      const success = await callApi(event.eventName, JSON.parse(event.data), true);
+      if(success) await prisma.dead_events_queue.delete({where: {id: event.id}})
     });
   } catch (error) {
     console.log(error);

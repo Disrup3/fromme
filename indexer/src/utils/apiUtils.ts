@@ -1,12 +1,11 @@
-import { PrismaClient } from "../src/client/generate";
-import axios from "axios"; 
-
-const prisma = new PrismaClient();
+import { prisma } from "../db"
+import axios from "axios";
 
 export const callApi = async (endpoint: string, data: any, isDead = false) => {
   try {
     await axios.post(`${process.env.API_ENDPOINT}${endpoint}`, data);
     console.log("callapi success");
+    return true
   } catch (error) {
     // TODO: if bad request save event en dead events queue
     console.log(
@@ -21,7 +20,6 @@ export const callApi = async (endpoint: string, data: any, isDead = false) => {
     });
     console.log("EVENTO MUERTO CREADO");
     console.log(error);
+    return false
   }
 };
-
-module.exports = callApi;
