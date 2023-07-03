@@ -7,7 +7,7 @@ async function main() {
   const NAME = 'FROMME';
   const SYMBOL = 'FME';
 
-  const NFT_FACTORY_ADDRESS = "0xe0e34037e33FbB36ec89de6cB92477f7Bb5B04A7" // mumbai
+  const NFT_FACTORY_ADDRESS = "0x8aF1CADcFC8bA57C78AEC34913A14C6294B07c51" // mumbai
 
   await verify(NFT_FACTORY_ADDRESS, [NAME, SYMBOL]);
 }
