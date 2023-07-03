@@ -3,13 +3,15 @@
 import { ItemListedEvent } from "../../event_types/marketplacetypes";
 import { callApi } from "../apiUtils";
 
-export const ItemListed = async (event: ItemListedEvent) => {
-    const eventData = {
-      tokenId: event.args.tokenId,
+export const ItemListed = async (event:ItemListedEvent) => {
+  console.log(event.blockNumber, "blockNumber");
+  const eventData = {
+      tokenId: Number(event.args.tokenId),
       seller: event.args.seller,
-      amount: event.args.amount,
-      startingTime: event.args.startingTime,
-      endTime: event.args.endTime,
-    };
-    await callApi("ItemListed", eventData);
+      amount: Number(event.args.amount),
+      startingTime: Number(event.args.startingTime),
+      endTime: Number(event.args.endTime)
   };
+  console.log(eventData);
+  await callApi("ItemListed", eventData);
+};
