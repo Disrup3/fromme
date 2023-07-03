@@ -13,5 +13,5 @@ export const ItemListed = async (event:ItemListedEvent) => {
       endTime: Number(event.args.endTime)
   };
   console.log(eventData);
-  await callApi("ItemListed", eventData);
+  await callApi("itemListed", eventData);
 };
