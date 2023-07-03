@@ -6,6 +6,9 @@ await import("./src/env.mjs");
 
 /** @type {import("next").NextConfig} */
 const config = {
+  images: {
+    domains: ["ipfs.io"],
+  },
   reactStrictMode: true,
   webpack: (config) => {
     config.resolve.fallback = { fs: false, net: false, tls: false };
