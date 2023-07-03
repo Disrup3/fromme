@@ -7,7 +7,8 @@
     "dev": "next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "reset-data": "npx ts-node --skip-project src/reset-data.ts"
   },
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.4.0",

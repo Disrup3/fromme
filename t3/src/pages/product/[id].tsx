@@ -1,3 +1,4 @@
+import { GetServerSideProps } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { AiOutlineHeart } from "react-icons/ai";
@@ -65,5 +66,24 @@ const NFTProduct = () => {
       </div>
     </div>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  //const { data } = await  // your fetch function here
+  // OBTENER DE LA BASE DE DATOS EL NFT POR TOKEN ID
+  // EL TOKEN ID SE OBTIENE DEL REQ.QUERY
+  // SI EL TOKEN ID NO EXISTE REDIRIGIR A 404
+
+  // OBTENER DATOS DEL VENDEDOR ( SI EXISTE EN BD)
+
+  // CHECKEAR SI EL NFT ESTÁ LISTADO, PARA COMPROBAR ESO TRAER LOS LISTINGS PARA ESE TOKENID
+  // Y CHECKEAR SI EL TIEMPO LIMITE ES INFERIOR AL TIEMPO ACTUAL
+  // RETORNAR DATOS
+
+  return {
+    props: {
+      something: {},
+    },
+  };
 };
 export default NFTProduct;

@@ -1,7 +1,5 @@
 import { useState } from "react";
 import NFTcard from "../components/ui/NFTcard";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 const explore = () => {
   // Simular datos recibidos de la API
