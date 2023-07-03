@@ -1,8 +1,6 @@
-import { time, loadFixture } from "@nomicfoundation/hardhat-network-helpers";
-import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs";
+import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { emit } from "process";
 
 describe("NFTFactory", function () {
   // We define a fixture to reuse the same setup in every test.
@@ -21,7 +19,7 @@ describe("NFTFactory", function () {
     return { nftFactory, owner, account1, account2 };
   }
 
-  describe("Deployment", function () {
+  describe("Full Test", function () {
     it("Should set the right owner", async function () {
       const { nftFactory, owner } = await loadFixture(deployFixture);
       expect(await nftFactory.owner()).to.equal(owner.address);
@@ -97,5 +95,35 @@ describe("NFTFactory", function () {
 
       expect(await nftFactory.ownerOf(0)).to.equal(account2.address);
     });
+
+    it("Other Functions", async function () {
+      const { nftFactory, account1 } = await loadFixture(deployFixture);
+
+      const first_nft_tokenUri = "hola.test"
+      const first_token_fee = 1000 // in base 10_000 (so 1000 = 10%)
+
+      // BURN
+      await nftFactory.connect(account1).createNFT(first_nft_tokenUri, first_token_fee)
+      expect(await nftFactory.ownerOf(0)).to.equal(account1.address);
+
+      await nftFactory.connect(account1).burn(0)
+
+      // Error means that the token ID has been properly burnt
+      await expect(nftFactory.ownerOf(0))
+      .to.be.revertedWith("ERC721: invalid token ID");
+
+      // Supports interface
+      await nftFactory.connect(account1).createNFT(first_nft_tokenUri, first_token_fee)
+      expect(await nftFactory.ownerOf(1)).to.equal(account1.address);
+
+      expect(await nftFactory.supportsInterface("0x49064906")).to.equal(true)
+
+      // Current tokenId
+      expect(await nftFactory.getCurrentTokenId()).to.equal(2)
+      await nftFactory.connect(account1).createNFT(first_nft_tokenUri, first_token_fee)
+      expect(await nftFactory.tokenURI(2)).to.equal(first_nft_tokenUri);
+      expect(await nftFactory.getCurrentTokenId()).to.equal(3)
+    });
+
   });
 });

@@ -4,8 +4,8 @@ import { verify } from "../utils/verify";
 // no fa falta si ja ho hem fet al deploy
 async function main() {
 
-  const NFT_FACTORY_ADDRESS = "0xe0e34037e33FbB36ec89de6cB92477f7Bb5B04A7" // mumbai
-  const FROMME_MARKETPLACE_ADDRESS = "0x5bD940E459982f385af60EfA14C12511109da6E9" // mumbai
+  const NFT_FACTORY_ADDRESS = "0x8aF1CADcFC8bA57C78AEC34913A14C6294B07c51" // mumbai
+  const FROMME_MARKETPLACE_ADDRESS = "0xc4b556711c913AcD5154DCAB0A4ba6b76375b874" // mumbai
 
   await verify(FROMME_MARKETPLACE_ADDRESS, [NFT_FACTORY_ADDRESS]);
 }
