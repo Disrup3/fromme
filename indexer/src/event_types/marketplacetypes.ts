@@ -1,9 +1,9 @@
-export interface AunctionCreatedEvent {
+export interface AuctionCreatedEvent {
     blockNumber: number;
-    args: eventargsAunctionCreated;
+    args: eventargsAuctionCreated;
 }
 
-type eventargsAunctionCreated = {
+type eventargsAuctionCreated = {
     tokenId: number;
     seller: string;
     startingAmount: number;
@@ -11,12 +11,12 @@ type eventargsAunctionCreated = {
     endTime: number;
 }
 
-export interface BetAddedEvent {
+export interface BidAddedEvent {
     blockNumber: number;
-    args: eventargsBetAdded;
+    args: eventargsBidAdded;
 }
 
-type eventargsBetAdded = {
+type eventargsBidAdded = {
     tokenId: number;
     currentAmount: number;
     currentBuyer: string;
@@ -82,4 +82,34 @@ type eventargsOfferAccepted = {
     seller: string;
     buyer: string;
     amount: number;
+}
+
+export interface AuctionCanceledEvent {
+    blockNumber: number;
+    args: eventargsAuctionCanceled;
+}
+
+type eventargsAuctionCanceled = {
+    tokenId: number;
+    seller: string;
+}
+
+export interface ItemListCanceledEvent {
+    blockNumber: number;
+    args: eventargsItemListCanceled;
+}
+
+type eventargsItemListCanceled = {
+    tokenId: number;
+    seller: string;
+}
+
+export interface OfferCanceledEvent {
+    blockNumber: number;
+    args: eventargsOfferCanceled;
+}
+
+type eventargsOfferCanceled = {
+    tokenId: number;
+    seller: string;
 }

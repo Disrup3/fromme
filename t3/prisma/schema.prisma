@@ -83,3 +83,21 @@ model ListedNft {
 
     @@unique([tokenId, startingTime])
 }
+
+model Auction {
+    tokenId         Int
+    seller          String?
+    startingAmount  BigInt?
+    startingTime    Int
+    endTime         Int
+
+    @@unique([tokenId, startingTime])
+}
+
+model Offer {
+    tokenId      Int
+    buyer       String
+    amount       BigInt
+
+    @@unique([tokenId, buyer])
+}
