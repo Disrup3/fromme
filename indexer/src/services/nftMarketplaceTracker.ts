@@ -4,7 +4,12 @@ import {nftFactoryContract} from "../constants/contractsData";
 import { callApi } from "../utils/apiUtils";
 import { PrismaClient } from "../client/generate";
 import { ItemListed } from "../utils/eventsUtils/itemListed";
-
+import { AunctionCreated } from "../utils/eventsUtils/AuctionCreated";
+import { BetAdded } from "../utils/eventsUtils/BetAdded";
+import { AuctionClaimed } from "../utils/eventsUtils/AuctionClaimed";
+import { ItemBought } from "../utils/eventsUtils/ItemBought";
+import { OfferAccepted } from "../utils/eventsUtils/OfferAccepted";
+import { OfferCreated } from "../utils/eventsUtils/OfferCreated";
 const provider = new ethers.providers.JsonRpcProvider(
     //utilizar variables de entorno posteriormente
     process.env.MUMBAI_RPC_PROVIDER ?? "http://127.0.0.1:8545/"
@@ -28,9 +33,6 @@ export const processNftMarketplaceEvents = async (startFromBlock:number, prisma:
     const handleMarketplaceEvents = async (events:any[]) => {
       // logic for handling paymentEvents
       for (const event of events) {
-        if (event.event === "ItemListed" ) {
-          ItemListed(event);} 
-          /*
         if (event.event === "AunctionCreated") {
             AunctionCreated(event);
         } else if (event.event === "BetAdded") {
@@ -45,7 +47,7 @@ export const processNftMarketplaceEvents = async (startFromBlock:number, prisma:
             OfferCreated(event);
         } else if (event.event === "OfferAccepted") {
             OfferAccepted(event);
-        } */
+        }
         // TODO: check evento de itemcancel
         lastBlockProcessed = event.blockNumber + 1;
       }
@@ -101,80 +103,3 @@ export const processNftMarketplaceEvents = async (startFromBlock:number, prisma:
       console.log(error);
     }
   };
-  /*
-//Typo en el nombre del evento en el contrato, pendiente arreglarlo
-const AunctionCreated = async (event:AunctionCreatedEvent) => {
-    console.log(event.blockNumber, "blockNumber");
-    const eventData = {
-        tokenId: Number(event.args.tokenId),
-        seller: event.args.seller,
-        startingAmount: Number(event.args.startingAmount),
-        startingTime: Number(event.args.startingTime),
-        endTime: Number(event.args.endTime),
-    };
-    console.log(eventData);
-    await callApi("AuctionCreated", eventData);
-  };
-
-const BetAdded = async (event:BetAddedEvent) => {
-    console.log(event.blockNumber, "blockNumber");
-    const eventData = {
-        tokenId: Number(event.args.tokenId),
-        currentAmount: Number(event.args.seller),
-        currentBuyer: event.args.currentBuyer
-    };
-    console.log(eventData);
-    await callApi("BetAdded", eventData);
-  };
-
-const AuctionClaimed = async (event:AuctionClaimedEvent) => {
-    console.log(event.blockNumber, "blockNumber");
-    const eventData = {
-        tokenId: Number(event.args.tokenId),
-        seller: event.args.seller,
-        buyer: event.args.buyer,
-        finalAmount: Number(event.args.finalAmount)
-    };
-    console.log(eventData);
-    await callApi("AuctionClaimed", eventData);
-  };
-
-
-
-const ItemBought = async (event:ItemBoughtEvent) => {
-    console.log(event.blockNumber, "blockNumber");
-    const eventData = {
-        tokenId: Number(event.args.tokenId),
-        seller: event.args.seller,
-        buyer: event.args.buyer,
-        amount: Number(event.args.amount)
-    };
-    console.log(eventData);
-    await callApi("ItemBought", eventData);
-  };
-
-const OfferCreated = async (event:OfferCreatedEvent) => {
-    console.log(event.blockNumber, "blockNumber");
-    const eventData = {
-        tokenId: Number(event.args.tokenId),
-        buyer: event.args.buyer,
-        amount: Number(event.args.amount),
-        startingTime: Number(event.args.startingTime),
-        endTime: Number(event.args.endTime)
-    };
-    console.log(eventData);
-    await callApi("OfferCreated", eventData);
-  };
-
-const OfferAccepted = async (event:OfferAcceptedEvent) => {
-    console.log(event.blockNumber, "blockNumber");
-    const eventData = {
-        tokenId: Number(event.args.tokenId),
-        seller: event.args.seller,
-        buyer: event.args.buyer,
-        amount: Number(event.args.amount),
-    };
-    console.log(eventData);
-    await callApi("OfferAccepted", eventData);
-  };
-  */
