@@ -135,7 +135,8 @@ const config = {
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null
+    "rootEnvPath": "../../../.env",
+    "schemaEnvPath": "../../../.env"
   },
   "relativePath": "../../../prisma",
   "clientVersion": "4.16.0",
@@ -144,8 +145,7 @@ const config = {
     "db"
   ],
   "activeProvider": "sqlite",
-  "dataProxy": false,
-  "postinstall": true
+  "dataProxy": false
 }
 
 const fs = require('fs')

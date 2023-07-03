@@ -75,9 +75,11 @@ model Nft {
 }
 
 model ListedNft {
-    tokenId      Int     @unique
+    tokenId      Int
     seller       String?
-    amount       Int?
+    amount       BigInt?
     startingTime Int
     endTime      Int
+
+    @@unique([tokenId, startingTime])
 }

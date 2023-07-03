@@ -5,6 +5,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  console.log("clg del t3:", req.body);
   if(!(req.method === "POST")) {
     return res.status(400).json({message: "unauthorized"});
   }
@@ -23,13 +24,17 @@ export default async function handler(
 const checkNftExists = async (tokenId: number, seller: string, amount: number, startingTime: number, endTime: number) => {
   const item = await prisma.listedNft.findUnique({
     where: {
-      tokenId: tokenId,
+      tokenId_startingTime: {
+        tokenId, startingTime,
+      }
     }
   });
   if(item) {
     await prisma.listedNft.update({
       where: {
-        tokenId: tokenId,
+        tokenId_startingTime: {
+          tokenId, startingTime,
+        }
       },
       data: {
         seller,
@@ -39,6 +44,7 @@ const checkNftExists = async (tokenId: number, seller: string, amount: number, s
       }
     });
   } else {
+    console.log("Creando il");
     await prisma.listedNft.create({
       data: {
         tokenId,

@@ -1,6 +1,7 @@
 import { NFTCreatedEvent } from "../event_types/nftfactorytypes";
 import { ethers } from "ethers";
 import {nftFactoryContract} from "../constants/contractsData";
+import { frommeMarketplaceContract } from "../constants/contractsData";
 import { callApi } from "../utils/apiUtils";
 import { PrismaClient } from "../client/generate";
 import { ItemListed } from "../utils/eventsUtils/itemListed";
@@ -11,8 +12,8 @@ const provider = new ethers.providers.JsonRpcProvider(
   );
 
 const loadMarketplaceContract = () => {
-    const abi = nftFactoryContract.abi;
-    const address = nftFactoryContract.address;
+    const abi = frommeMarketplaceContract.abi;
+    const address = frommeMarketplaceContract.address;
     return new ethers.Contract(address, abi, provider);
   };
 
