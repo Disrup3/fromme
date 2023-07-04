@@ -95,9 +95,9 @@ model Auction {
 }
 
 model Offer {
-    tokenId      Int
-    buyer       String
-    amount       BigInt
+    tokenId         Int
+    buyer           String
+    amount          BigInt
 
     @@unique([tokenId, buyer])
 }
