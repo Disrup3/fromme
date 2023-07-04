@@ -54,7 +54,7 @@ export const processNftMarketplaceEvents = async (startFromBlock:number, prisma:
           ItemListCanceled(event);
         } else if(event.event === "OfferCreated") {
           OfferCreated(event);
-        } else if(event.event === "OfferAccepted") { // Pablo
+        } else if(event.event === "OfferAccepted") {
           OfferAccepted(event);
         } else if(event.event === "OfferCanceled") {
           OfferCanceled(event);
