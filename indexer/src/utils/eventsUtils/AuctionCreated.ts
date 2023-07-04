@@ -1,7 +1,7 @@
-import { AunctionCreatedEvent } from "../../event_types/marketplacetypes";
+import { AuctionCreatedEvent } from "../../event_types/marketplacetypes";
 import { callApi } from "../apiUtils";
-//Typo en el nombre del evento en el contrato, pendiente arreglarlo
-export const AuctionCreated = async (event:AunctionCreatedEvent) => {
+
+export const AuctionCreated = async (event:AuctionCreatedEvent) => {
     console.log(event.blockNumber, "blockNumber");
     const eventData = {
         tokenId: Number(event.args.tokenId),
