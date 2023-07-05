@@ -72,6 +72,7 @@ model Nft {
     creator      String
     tokenUri     String
     feeNumerator Int
+    listedNfts   ListedNft[]
 }
 
 model ListedNft {
@@ -79,7 +80,9 @@ model ListedNft {
     seller       String?
     amount       BigInt?
     startingTime Int
+    isCancelled  Boolean
     endTime      Int
+    nft          Nft @relation(fields: [tokenId], references: [tokenId])
 
     @@unique([tokenId, startingTime])
 }

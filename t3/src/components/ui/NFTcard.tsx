@@ -17,7 +17,8 @@ const NFTcard = ({ item }: any) => {
       <div className="absolute z-10 hidden w-[250px] flex-col gap-16 p-6 group-hover:flex">
         <div className="flex w-full items-center justify-between">
           <p className="rounded-full bg-primary px-4 py-2 text-base-100">
-            {item.price.toFixed(2)} EUR
+            {/*Reponer toFixed*/}
+            {item.amount} EUR
           </p>
           <p className="cursor-pointer rounded-full bg-base-100 p-3 hover:text-primary">
             <AiFillHeart />
@@ -46,7 +47,8 @@ const NFTcard = ({ item }: any) => {
             alt={item.name}
             className="rounded-full"
           />
-          <p className="font-semibold">{getInitials(item.creator)}</p>
+          {/*Reponer getInitials*/}
+          <p className="font-semibold">{item.creator}</p>
         </div>
         <p>{item.stock} in stock</p>
       </div>
