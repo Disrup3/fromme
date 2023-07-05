@@ -23,8 +23,10 @@ export default function useNftfactoryContract({
         abi: NFTFactory_abi,
         address: addresses.NFTFactory,
         functionName: "createNFT",
-        args: [_tokenURI, _feeNumerator],
+        args: [_tokenURI, _feeNumerator],        
     });
+
+    console.log(_tokenURI)
 
     const {
         write: createNFT,
