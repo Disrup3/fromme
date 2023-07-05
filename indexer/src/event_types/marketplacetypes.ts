@@ -1,9 +1,9 @@
-export interface AunctionCreatedEvent {
+export interface AuctionCreatedEvent {
     blockNumber: number;
-    args: eventargsAunctionCreated;
+    args: eventargsAuctionCreated;
 }
 
-type eventargsAunctionCreated = {
+type eventargsAuctionCreated = {
     tokenId: number;
     seller: string;
     startingAmount: number;

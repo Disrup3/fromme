@@ -3,8 +3,12 @@ import Link from "next/link";
 import { AiOutlineHeart } from "react-icons/ai";
 import { GetServerSideProps } from "next";
 import { prisma } from "~/server/db";
+import { useState } from "react";
 
-const NFTProduct = () => {
+const NFTProduct = ({ seller, amount }) => {
+
+  console.log(amount)
+
   return (
     <div className="flex w-full justify-evenly p-6">
       <div className="flex w-1/3 flex-col gap-5">
@@ -23,10 +27,10 @@ const NFTProduct = () => {
         <div className="flex flex-col gap-7 rounded-lg border p-6">
           <div className="flex flex-col items-start">
             <p className="font-semibold">Address:</p>
-            <p>sdasdasdasdasdas</p>
+            <p>{seller}</p>
             <p className="font-semibold">Price</p>
             <p className="text-3xl font-bold">
-              {0.0}
+              {amount}
               <span className="text-base">EUR</span>
             </p>
           </div>
@@ -77,9 +81,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   // EL TOKEN ID SE OBTIENE DEL REQ.QUERY
   // SI EL TOKEN ID NO EXISTE REDIRIGIR A 404
 
-  console.log('ctx query ::::::::::', ctx.query)
-  const nftId = parseInt(ctx.query.id);
-  console.log('nftId ::::::::::', nftId)
+  // console.log('ctx query ::::::::::', ctx.query)
+  const nftId = parseInt(ctx.query.id as string);
+  // console.log('nftId :', nftId)
 
   if (!nftId) {
     console.log("404")
@@ -91,37 +95,60 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  // OBTENER DATOS DEL VENDEDOR ( SI EXISTE EN BD)
+  // OBTENER DATOS DEL VENDEDOR (SI EXISTE EN BD)
 
   const nftData = await prisma.nft.findUnique({
     where: {
       tokenId: nftId
     }
   });
-  // console.log(nftData);
+  // console.log('nftData :', nftData);
   const creatorAddress = nftData?.creator;
-  // console.log(creatorAddress);
+  // console.log('creatorAddress :', creatorAddress;
 
-
-  const listedNftData = await prisma.account.findMany();
-  console.log(listedNftData); 
-
-  // const listedNftData = await prisma.listedNft.findMany({
-  //   where: {
-  //     tokenId: nftId 
-  //   }
-  // });
-  // console.log(listedNftData);
+  // const listedNftData = await prisma.listedNft.findMany();
+  const listedNftData = await prisma.listedNft.findUnique({
+    where: {
+      tokenId: nftId 
+    }
+  });
+  // console.log('LISTED :', listedNftData?.amount);
+  // console.log('LISTED :', Number(listedNftData?.amount));
 
   // CHECKEAR SI EL NFT ESTÁ LISTADO, PARA COMPROBAR ESO TRAER LOS LISTINGS PARA ESE TOKENID
   // Y CHECKEAR SI EL TIEMPO LIMITE ES INFERIOR AL TIEMPO ACTUAL
   // RETORNAR DATOS
 
+  if (listedNftData) {
+    const amount = Number(listedNftData?.amount)
+    const currentTime = new Date();
+    const currentTimestamp = currentTime.getTime();
+
+    console.log(currentTimestamp)
+    console.log(listedNftData.endTime * 1000)
+
+    // If the list is still active
+    if (currentTimestamp < listedNftData.endTime * 1000) {
+      return {
+        props: {
+          seller: listedNftData?.seller,
+          amount: amount,
+          startingTime: listedNftData?.startingTime,
+          endTime: listedNftData?.endTime,
+        },
+      };  
+    }
+  } 
+
   return {
     props: {
-      something: {},
+      seller: null,
+      amount: null,
+      startingTime: null,
+      endTime: null,
     },
-  };
+  };  
+
 };
 
 

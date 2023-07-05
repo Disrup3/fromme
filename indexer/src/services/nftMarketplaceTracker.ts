@@ -5,7 +5,7 @@ import { frommeMarketplaceContract } from "../constants/contractsData";
 import { callApi } from "../utils/apiUtils";
 import { PrismaClient } from "../client/generate";
 import { ItemListed } from "../utils/eventsUtils/itemListed";
-import { AunctionCreated } from "../utils/eventsUtils/AuctionCreated";
+import { AuctionCreated } from "../utils/eventsUtils/AuctionCreated";
 import { BetAdded } from "../utils/eventsUtils/BetAdded";
 import { AuctionClaimed } from "../utils/eventsUtils/AuctionClaimed";
 import { ItemBought } from "../utils/eventsUtils/ItemBought";
@@ -34,8 +34,8 @@ export const processNftMarketplaceEvents = async (startFromBlock:number, prisma:
     const handleMarketplaceEvents = async (events:any[]) => {
       // logic for handling paymentEvents
       for (const event of events) {
-        if (event.event === "AunctionCreated") {
-            AunctionCreated(event);
+        if (event.event === "AuctionCreated") {
+            AuctionCreated(event);
         } else if (event.event === "BetAdded") {
             BetAdded(event);
         } else if (event.event === "AuctionClaimed") {
