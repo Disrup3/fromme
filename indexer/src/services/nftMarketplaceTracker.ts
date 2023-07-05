@@ -37,13 +37,13 @@ export const processNftMarketplaceEvents = async (startFromBlock:number, prisma:
     const handleMarketplaceEvents = async (events:any[]) => {
       // logic for handling paymentEvents
       for (const event of events) {
-        if(event.event === "AuctionCreated") { // Pablo
+        if(event.event === "AuctionCreated") {
           AuctionCreated(event);
-        } else if(event.event === "BidAdded") { // Pablo
+        } else if(event.event === "BidAdded") { // Preguntar
           BidAdded(event);
-        } else if(event.event === "AuctionClaimed") { // Pablo
+        } else if(event.event === "AuctionClaimed") { // Preguntar
           AuctionClaimed(event);
-        } else if(event.event === "AuctionCanceled") { // Pablo
+        } else if(event.event === "AuctionCanceled") { // Preguntar
           AuctionCanceled(event);
         }
         else if (event.event === "ItemListed") {
