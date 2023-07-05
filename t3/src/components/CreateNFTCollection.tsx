@@ -1,6 +1,13 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import Dropzone, { useDropzone } from "react-dropzone";
-import { Dispatch, FC, SetStateAction, useMemo, useState } from "react";
+import {
+  Dispatch,
+  FC,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { NFTStorage } from "nft.storage";
 import useNftfactoryContract from "../smart-contracts/hooks/create";
 
@@ -18,6 +25,7 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
   } = useForm<FormCreate>();
 
   const [invalidImage, setInvalidImage] = useState<boolean>(false);
+  // [tokenUri, setTokenUri] = useState({});
 
   const {
     // Web hook para interactuar con el contrato
@@ -48,18 +56,23 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
         image: data.image!,
       };
       setInvalidImage(false);
+
       const metadata = await new NFTStorage({ token }).store(uriJson);
+      //setTokenUri(metadata);
       console.log({ "IPFS URL for the metadata": metadata.url });
       console.log({ "metadata.json contents": metadata.data });
       console.log({
         "metadata.json contents with IPFS gateway URLs": metadata.embed(),
       });
-      write?.();
+      console.log("metadata.url", metadata.url);
+      // console.log("tokenUri", tokenUri);
+      write?.({ args: [metadata.url, 1100] });
     } catch (err: any) {
       // setSubmitLoading(false);
       console.log(err);
     }
   };
+
   // ----------------------DROPZONE---------------------- //
   const { isFocused, isDragAccept, isDragReject } = useDropzone({
     accept: { "image/*": [] },

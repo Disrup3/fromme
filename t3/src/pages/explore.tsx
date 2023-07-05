@@ -191,7 +191,9 @@ export const getServerSideProps: GetServerSideProps = async () => {
       nft: true,
     },
   });
-  items.map((item) => (item.amount = item.amount?.toString()));
+  items.map((item) => {
+    item.amount = item.amount?.toString();
+  });
   console.log(items);
   return {
     props: { items },

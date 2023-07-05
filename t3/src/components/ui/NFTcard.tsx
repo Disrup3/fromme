@@ -1,15 +1,26 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AiFillHeart } from "react-icons/ai";
-import { useState, FC } from "react";
+import { useState, FC, useEffect } from "react";
 import { getInitials } from "~/utils/ui";
 import Image from "next/image";
+import axios from "axios";
 
 // interface Props {
 //     item: ExploreItem;
 // }
+const getIPFS = async () => {
+  const teseto = await axios.get(
+    "https://ipfs.io/ipfs/bafyreif6v655hmxg4f6di63ehaco52fit6lijskem3lvarkgdvr77kao7y/metadata.json"
+  );
+  console.log("teseto", teseto);
+};
 
 const NFTcard = ({ item }: any) => {
   // const [isHovered, setIsHovered] = useState<boolean>(false);
+  //.log("aaaa", await item.nft.tokenUri);
+  useEffect(() => {
+    getIPFS();
+  }, []);
 
   return (
     <div className="group flex h-fit flex-col items-center gap-2 rounded-xl shadow-md shadow-primary">
