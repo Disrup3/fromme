@@ -23,6 +23,7 @@
     "@trpc/react-query": "^10.26.0",
     "@trpc/server": "^10.26.0",
     "axios": "^1.4.0",
+    "dotenv": "^16.3.1",
     "ethers": "^5.7.2",
     "next": "^13.4.2",
     "next-auth": ">=4.10.2 <=4.20.1",
