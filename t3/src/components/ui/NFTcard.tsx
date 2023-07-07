@@ -8,19 +8,43 @@ import axios from "axios";
 // interface Props {
 //     item: ExploreItem;
 // }
-const getIPFS = async () => {
-  const teseto = await axios.get(
-    "https://ipfs.io/ipfs/bafyreif6v655hmxg4f6di63ehaco52fit6lijskem3lvarkgdvr77kao7y/metadata.json"
-  );
-  console.log("teseto", teseto);
-};
+//const getIPFSMetadata = async () => {
+//  const metadataIPFS = await axios.get(
+//    "https://ipfs.io/ipfs/bafyreif6v655hmxg4f6di63ehaco52fit6lijskem3lvarkgdvr77kao7y/metadata.json"
+//  );
+//  console.log("metadataIPFS", metadataIPFS.data);
+//  return metadataIPFS;
+//};
 
 const NFTcard = ({ item }: any) => {
-  // const [isHovered, setIsHovered] = useState<boolean>(false);
-  //.log("aaaa", await item.nft.tokenUri);
+  const [tokenUri, setTokenUri] = useState();
+  const [tokenName, setTokenName] = useState();
+  const [tokenDescription, setTokenDescription] = useState();
   useEffect(() => {
-    getIPFS();
+    const getIPFSMetadata = async () => {
+      const metadataIPFS = await axios.get(
+        "https://ipfs.io/ipfs/bafyreif6v655hmxg4f6di63ehaco52fit6lijskem3lvarkgdvr77kao7y/metadata.json"
+      );
+      setTokenUri(metadataIPFS.data.image);
+      setTokenName(metadataIPFS.data.name);
+      setTokenDescription(metadataIPFS.data.description);
+    };
+    getIPFSMetadata();
   }, []);
+  console.log("tokenUri", typeof tokenUri);
+
+  //@ts-ignore
+  const formattedTokenUri = `https://ipfs.io/ipfs/${tokenUri?.substring(
+    7,
+    200
+  )}`;
+  console.log("uri", formattedTokenUri);
+
+  const formattedTokenName = String(tokenName);
+  console.log("formattedTokenName", formattedTokenName);
+
+  const formattedTokenDescription = String(tokenDescription);
+  console.log("formattedTokenDescription", formattedTokenDescription);
 
   return (
     <div className="group flex h-fit flex-col items-center gap-2 rounded-xl shadow-md shadow-primary">
@@ -41,21 +65,21 @@ const NFTcard = ({ item }: any) => {
       </div>
       <div className="flex h-72 justify-center overflow-hidden rounded-lg">
         <Image
-          src={item.image}
-          alt={item.name}
+          src={formattedTokenUri}
+          alt={formattedTokenName}
           width={250}
           height={250}
           className="object-cover duration-700 group-hover:scale-110"
         />
       </div>
       <div className="flex w-full flex-col items-start gap-3 p-3">
-        <h2 className="text-xl font-semibold">{item.name}</h2>
+        <h2 className="text-xl font-semibold">{formattedTokenName}</h2>
         <div className="flex justify-start gap-2">
           <Image
             src="/images/test.jpg"
             width={25}
             height={25}
-            alt={item.name}
+            alt={``}
             className="rounded-full"
           />
           {/*Reponer getInitials*/}

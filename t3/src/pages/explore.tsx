@@ -186,15 +186,21 @@ const explore = ({ items }: { items: any }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const items = await prisma.listedNft.findMany({
+  const listedNfts = await prisma.listedNft.findMany({
     include: {
       nft: true,
     },
   });
-  items.map((item) => {
-    item.amount = item.amount?.toString();
+  listedNfts.map((listedNft) => {
+    listedNft.amount = listedNft.amount?.toString();
   });
-  console.log(items);
+  console.log("listedNfts", listedNfts);
+
+  const nfts = await prisma.nft.findMany({});
+  console.log("nfts", nfts);
+
+  const items = [nfts, listedNfts];
+
   return {
     props: { items },
   };

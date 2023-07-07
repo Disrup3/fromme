@@ -64,7 +64,6 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
       console.log({
         "metadata.json contents with IPFS gateway URLs": metadata.embed(),
       });
-      console.log("metadata.url", metadata.url);
       // console.log("tokenUri", tokenUri);
       write?.({ args: [metadata.url, 1100] });
     } catch (err: any) {
