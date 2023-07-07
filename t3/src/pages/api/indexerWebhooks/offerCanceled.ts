@@ -16,25 +16,30 @@ export default async function handler(
     return foundRow
     ? res.status(200).json({message: "ok"})
     : res.status(412).json({message: "Nonexisting offer"});
-  } catch (error) {
+  } catch(error) {
     return res.status(500).json({message: JSON.stringify(error)});
   }
 }
 
-const checkOfferExists = async (tokenId: number, buyer: string): Promise<boolean> => {
+const checkOfferExists = async (tokenId: number, seller: string): Promise<boolean> => {
   const row = await prisma.offer.findUnique({
     where: {
       tokenId_buyer: {
-        tokenId, buyer,
+        tokenId: tokenId,
+        buyer: seller,
       }
     }
   });
   if(row) {
-    await prisma.offer.delete({
+    await prisma.offer.update({
       where: {
         tokenId_buyer: {
-          tokenId, buyer,
+          tokenId: tokenId,
+          buyer: seller,
         }
+      },
+      data: {
+        isCancelled: true,
       },
     });
   }

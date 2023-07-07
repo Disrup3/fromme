@@ -1,4 +1,4 @@
-/*import { prisma } from "~/server/db";
+import { prisma } from "~/server/db";
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(
@@ -51,4 +51,4 @@ const checkOfferExists = async (tokenId: number, currentAmount: number, currentB
       }
     });
   }
-}*/
+}

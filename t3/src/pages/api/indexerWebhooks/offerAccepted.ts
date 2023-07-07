@@ -9,10 +9,10 @@ export default async function handler(
     return res.status(400).json({message: "unauthorized"});
   }
 
-  const { tokenId, seller, buyer, amount } = req.body;
+  const { tokenId, buyer } = req.body;
 
   try {
-    const foundRow: boolean = await checkOfferExists(tokenId, seller, buyer, amount);
+    const foundRow: boolean = await checkOfferExists(tokenId, buyer);
     return foundRow
     ? res.status(200).json({message: "ok"})
     : res.status(412).json({message: "Nonexisting offer"});
@@ -21,7 +21,7 @@ export default async function handler(
   }
 }
 
-const checkOfferExists = async (tokenId: number, seller: string, buyer: string, amount: number): Promise<boolean> => {
+const checkOfferExists = async (tokenId: number, buyer: string): Promise<boolean> => {
   const row = await prisma.offer.findUnique({
     where: {
       tokenId_buyer: {
@@ -30,12 +30,15 @@ const checkOfferExists = async (tokenId: number, seller: string, buyer: string, 
     }
   });
   if(row) {
-    await prisma.offer.delete({
+    await prisma.offer.update({
       where: {
         tokenId_buyer: {
           tokenId, buyer,
         }
       },
+      data: {
+        isCancelled: true,
+      }
     });
   }
   return (row ? true : false);

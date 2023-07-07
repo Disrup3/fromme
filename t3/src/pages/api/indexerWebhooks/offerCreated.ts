@@ -37,6 +37,7 @@ const checkOfferExists = async (tokenId: number, buyer: string, amount: number, 
       data: {
         buyer,
         amount,
+        isCancelled: false,
       }
     });
   } else {
@@ -45,6 +46,7 @@ const checkOfferExists = async (tokenId: number, buyer: string, amount: number, 
         tokenId,
         buyer,
         amount,
+        isCancelled: false,
       }
     });
   }
