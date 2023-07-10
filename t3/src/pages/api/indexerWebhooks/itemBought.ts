@@ -12,15 +12,17 @@ export default async function handler(
   const { tokenId, seller, buyer, amount } = req.body;
 
   try {
-    await checkNftExists(tokenId, seller, buyer, amount );
-    return res.status(200).json({message: "ok"})
+    const foundRow: boolean = await checkNftExists(tokenId, seller, buyer, amount );
+    return foundRow
+    ? res.status(200).json({message: "ok"})
+    : res.status(412).json({message: "Nonexisting offer"});
   } catch (error) {
     return res.status(500).json({message: JSON.stringify(error)});
   }
 }
 
 const checkNftExists = async (tokenId: number, seller: string, buyer:string, amount: number) => {
-  const var_listed = await prisma.listedNft.findFirst({
+  const listedNft = await prisma.listedNft.findFirst({
     where: {
       tokenId:tokenId,
       amount:amount,
@@ -29,14 +31,15 @@ const checkNftExists = async (tokenId: number, seller: string, buyer:string, amo
       nft:true,
     }
   });
-  await prisma.listedNft.update({
-    where: {
-      tokenId:var_listed!.nft.tokenId,
-      amount:amount,
-    },
-    data: {
-      isCancelled: true,
-    }
-  })
-  await prisma.nft
+  if (listedNft){
+    await prisma.listedNft.updateMany({
+      where: {
+        tokenId:tokenId,
+      },
+      data: {
+        isCancelled: true,
+      }
+    })
+  }
+  return (listedNft ? true : false);
 }
