@@ -6,8 +6,10 @@ import { callApi } from "../utils/apiUtils";
 import { PrismaClient } from "../client/generate";
 import { ItemListed } from "../utils/eventsUtils/itemListed";
 import { AuctionCreated } from "../utils/eventsUtils/AuctionCreated";
+
 import { AuctionCanceled } from "../utils/eventsUtils/AuctionCanceled";
 import { BidAdded } from "../utils/eventsUtils/BidAdded";
+
 import { AuctionClaimed } from "../utils/eventsUtils/AuctionClaimed";
 import { ItemBought } from "../utils/eventsUtils/ItemBought";
 import { OfferAccepted } from "../utils/eventsUtils/OfferAccepted";
@@ -37,6 +39,7 @@ export const processNftMarketplaceEvents = async (startFromBlock:number, prisma:
     const handleMarketplaceEvents = async (events:any[]) => {
       // logic for handling paymentEvents
       for (const event of events) {
+
         if(event.event === "AuctionCreated") {
           AuctionCreated(event);
         } else if(event.event === "BidAdded") { // Preguntar
@@ -58,6 +61,7 @@ export const processNftMarketplaceEvents = async (startFromBlock:number, prisma:
           OfferAccepted(event);
         } else if(event.event === "OfferCanceled") {
           OfferCanceled(event);
+
         }
         // TODO: check evento de itemcancel
         lastBlockProcessed = event.blockNumber + 1;
@@ -94,7 +98,7 @@ export const processNftMarketplaceEvents = async (startFromBlock:number, prisma:
           }
   
           await handleMarketplaceEvents(batches[runBatch]);
-          await prisma.tracker_State.update({
+          await prisma.tracker_State.updateMany({
             where: {
               contractAddress: nftFactoryContract.address,
             },

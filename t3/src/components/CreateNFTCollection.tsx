@@ -1,6 +1,13 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import Dropzone, { useDropzone } from "react-dropzone";
-import { Dispatch, FC, SetStateAction, useMemo, useState } from "react";
+import {
+  Dispatch,
+  FC,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { NFTStorage } from "nft.storage";
 import useNftfactoryContract from "../smart-contracts/hooks/create";
 
@@ -17,7 +24,10 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
     setValue,
   } = useForm<FormCreate>();
 
+
+
   const [invalidImage, setInvalidImage] = useState<boolean>(false);
+  const [tokenUri, setTokenUri] = useState({});
 
   const {
     // Web hook para interactuar con el contrato
@@ -48,18 +58,22 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
         image: data.image!,
       };
       setInvalidImage(false);
+
       const metadata = await new NFTStorage({ token }).store(uriJson);
+      setTokenUri(metadata);
       console.log({ "IPFS URL for the metadata": metadata.url });
       console.log({ "metadata.json contents": metadata.data });
       console.log({
         "metadata.json contents with IPFS gateway URLs": metadata.embed(),
       });
-      write?.();
+      console.log("tokenUri", tokenUri);
+      write?.({ args: [metadata.url, 1100] });
     } catch (err: any) {
       // setSubmitLoading(false);
       console.log(err);
     }
   };
+
   // ----------------------DROPZONE---------------------- //
   const { isFocused, isDragAccept, isDragReject } = useDropzone({
     accept: { "image/*": [] },
@@ -126,7 +140,7 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
         <input
           type="text"
           className="input-bordered input w-full"
-          {...register("description", { required: true })}
+          {...register("description", { required: false })}
         />
         {errors.description && (
           <span className="text-accent">Required field</span>
@@ -171,15 +185,15 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
         {errors.category && <span className="text-accent">Required field</span>}
       </div>
       {/* Precio */}
-      <div className="flex w-full flex-col">
+      {/* <div className="flex w-full flex-col">
         <label>Price:</label>
         <input
           type="number"
           className="input-bordered input w-full"
-          {...register("price", { required: true, min: 0 })}
+          {...register("price", { required: false, min: 0 })}
         />
         {errors.price && <span className="text-accent">Invalid price</span>}
-      </div>
+      </div> */}
       {/* Royalties */}
       <div className="flex w-full flex-col">
         <label>Royalties:</label>

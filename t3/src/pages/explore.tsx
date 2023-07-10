@@ -2,51 +2,53 @@ import { useState } from "react";
 import NFTcard from "../components/ui/NFTcard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { GetServerSideProps } from "next";
+import { prisma } from "~/server/db";
 
-const explore = () => {
+const explore = ({ items }: { items: any }) => {
   // Simular datos recibidos de la API
-  const items = [
-    {
-      name: "Los 90",
-      description: "Iconos de los años 90",
-      image:
-        "https://ipfs.io/ipfs/bafybeihqg2q2lhokindipetm5c2yiknwaes423dyyi6yssa3rva5mdggfu/FUA_pLhWQAE2GyI-1024x1229.jpeg",
-      price: 1,
-      creator: "Bruce Willis",
-      stock: 10,
-      favorites: 230,
-    },
-    {
-      name: "Pájaro azul",
-      description: "Iconos de los años 90",
-      image:
-        "https://ipfs.io/ipfs/bafybeibl42qqf6edhl67hfpwxax4sc6sehcs2oqhajsaqxjyfjgtlcijdi/photo_2021-10-04_16-09-14.jpg",
-      price: 233,
-      creator: "Fernando Alonso Díaz",
-      stock: 3,
-      favorites: 300,
-    },
-    {
-      name: "Película Netflix",
-      description: "desc",
-      image:
-        "https://ipfs.io/ipfs/bafybeigucrxr7k5yv7bu53pohp66m55if7qvksraqwrdhx2p7pyqdv5pu4/fghertgerryhjrtyj.jpg",
-      price: 32,
-      creator: "Raphael",
-      stock: 2,
-      favorites: 310,
-    },
-    {
-      name: "Mr Crypto 5582",
-      description: "Un Mr Crypto",
-      image:
-        "https://ipfs.io/ipfs/bafybeieeuo7onug6boss3hs7ryt5twcyamuktob5emwhjfeipcamzeknoe/mrCrypto5582.jpg",
-      price: 5,
-      creator: "Pep Guardiola",
-      stock: 2,
-      favorites: 310,
-    },
-  ];
+  //const items = [
+  //  {
+  //    name: "Los 90",
+  //    description: "Iconos de los años 90",
+  //    image:
+  //      "https://ipfs.io/ipfs/bafybeihqg2q2lhokindipetm5c2yiknwaes423dyyi6yssa3rva5mdggfu/FUA_pLhWQAE2GyI-1024x1229.jpeg",
+  //    price: 1,
+  //    creator: "Bruce Willis",
+  //    stock: 10,
+  //    favorites: 230,
+  //  },
+  //  {
+  //    name: "Pájaro azul",
+  //    description: "Iconos de los años 90",
+  //    image:
+  //      "https://ipfs.io/ipfs/bafybeibl42qqf6edhl67hfpwxax4sc6sehcs2oqhajsaqxjyfjgtlcijdi/photo_2021-10-04_16-09-14.jpg",
+  //    price: 233,
+  //    creator: "Fernando Alonso Díaz",
+  //    stock: 3,
+  //    favorites: 300,
+  //  },
+  //  {
+  //    name: "Película Netflix",
+  //    description: "desc",
+  //    image:
+  //      "https://ipfs.io/ipfs/bafybeigucrxr7k5yv7bu53pohp66m55if7qvksraqwrdhx2p7pyqdv5pu4/fghertgerryhjrtyj.jpg",
+  //    price: 32,
+  //    creator: "Raphael",
+  //    stock: 2,
+  //    favorites: 310,
+  //  },
+  //  {
+  //    name: "Mr Crypto 5582",
+  //    description: "Un Mr Crypto",
+  //    image:
+  //      "https://ipfs.io/ipfs/bafybeieeuo7onug6boss3hs7ryt5twcyamuktob5emwhjfeipcamzeknoe/mrCrypto5582.jpg",
+  //    price: 5,
+  //    creator: "Pep Guardiola",
+  //    stock: 2,
+  //    favorites: 310,
+  //  },
+  //];
 
   // Simular datos recibidos de la API
   const [categoriesSelected, setCategoriesSelected] = useState<selectable[]>([
@@ -175,11 +177,38 @@ const explore = () => {
         <button className="btn-primary btn">Reset filters</button>
       </div>
       <div className="flex flex-wrap justify-center gap-5 p-8">
-        {items?.map((item, index) => (
-          <NFTcard key={index} item={item} />
-        ))}
+        {items?.map((item: ExploreItem, index: any) => {
+          // console.log('explore ::::', index, item)
+          return <NFTcard key={index} item={item} />;
+        })}
       </div>
     </div>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  // const listedNfts = await prisma.listedNft.findMany({
+  //   include: {
+  //     nft: true,
+  //   },
+  // });
+  // listedNfts.map((listedNft) => {
+  //   listedNft.amount = listedNft.amount?.toString();
+  // });
+  // console.log("listedNfts", listedNfts);
+
+  const nfts = await prisma.nft.findMany({});
+  // console.log("nfts", nfts);
+
+  // const items = [nfts, listedNfts]; // old version - no need to repeat the listed
+  // const items = nfts; // good version
+  const items = nfts.filter((nft: any) => nft.tokenId >= 10); // test version - delete the nfts that have incorrect IPFS token Uri
+
+  
+  // console.log("items", items);
+
+  return {
+    props: { items },
+  };
 };
 export default explore;

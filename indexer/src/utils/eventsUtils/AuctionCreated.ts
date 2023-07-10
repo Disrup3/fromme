@@ -1,6 +1,5 @@
 import { AuctionCreatedEvent } from "../../event_types/marketplacetypes";
 import { callApi } from "../apiUtils";
-
 export const AuctionCreated = async (event:AuctionCreatedEvent) => {
     console.log(event.blockNumber, "blockNumber");
     const eventData = {

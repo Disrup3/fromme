@@ -15,9 +15,9 @@ export default function useListItem({
   _durationInSeconds,
   onSuccessfulListItem,
 }: {
-  _tokenId: bigint;
-  _amount: bigint;
-  _durationInSeconds: bigint;
+  _tokenId: number;
+  _amount: number;
+  _durationInSeconds: number;
   onSuccessfulListItem: () => void;
 }) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
