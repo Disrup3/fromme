@@ -23,9 +23,9 @@ const connect = async () => {
   }
 
   const trackContractCallback = async () => {
-    const lastBlocks = await prisma.tracker_State.findMany();
-    await processNftMarketplaceEvents(lastBlocks[0].lastBlockProcessed, prisma);
+    const lastBlocks = await prisma.tracker_State.findMany(); 
     await processFactoryTrackerEvents(lastBlocks[0].lastBlockProcessed, prisma);
+    await processNftMarketplaceEvents(lastBlocks[0].lastBlockProcessed, prisma);
     await processDeadEvents();
     setTimeout(() => trackContractCallback(), 2000); // Recursividad de trackeo
   };

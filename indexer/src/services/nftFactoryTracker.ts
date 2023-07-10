@@ -65,7 +65,7 @@ export const processFactoryTrackerEvents = async (startFromBlock:number, prisma:
           }
   
           await handleMarketplaceEvents(batches[runBatch]);
-          await prisma.tracker_State.update({
+          await prisma.tracker_State.updateMany({
             where: {
               contractAddress: nftFactoryContract.address,
             },

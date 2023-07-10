@@ -4,6 +4,7 @@ import { useState, FC, useEffect } from "react";
 import { getInitials } from "~/utils/ui";
 import Image from "next/image";
 import axios from "axios";
+import Link from "next/link";
 
 // interface Props {
 //     item: ExploreItem;
@@ -17,34 +18,55 @@ import axios from "axios";
 //};
 
 const NFTcard = ({ item }: any) => {
+  const [tokenId, setTokenId] = useState();
   const [tokenUri, setTokenUri] = useState();
   const [tokenName, setTokenName] = useState();
   const [tokenDescription, setTokenDescription] = useState();
+
   useEffect(() => {
     const getIPFSMetadata = async () => {
-      const metadataIPFS = await axios.get(
-        "https://ipfs.io/ipfs/bafyreif6v655hmxg4f6di63ehaco52fit6lijskem3lvarkgdvr77kao7y/metadata.json"
-      );
+
+    // console.log(item.tokenId) 
+    setTokenId(item.tokenId) 
+
+    try {
+
+      const _tokenUri = await item.tokenUri;
+      const _formattedTokenUri = await formatTokenUri(_tokenUri);
+      const metadataIPFS = await axios.get(_formattedTokenUri);
+      console.log(metadataIPFS) 
+
+      // Example url to test
+      // const metadataIPFS = await axios.get(
+      //   "https://ipfs.io/ipfs/bafyreif6v655hmxg4f6di63ehaco52fit6lijskem3lvarkgdvr77kao7y/metadata.json"
+      // );
+
       setTokenUri(metadataIPFS.data.image);
       setTokenName(metadataIPFS.data.name);
       setTokenDescription(metadataIPFS.data.description);
+    } catch {
+      console.log('Invalid IPFS metadata')
+    }
+
     };
     getIPFSMetadata();
   }, []);
-  console.log("tokenUri", typeof tokenUri);
+  // console.log("tokenUri", typeof tokenUri);
+
+   async function formatTokenUri(_tokenUri: string) {
+      const formattedTokenUri = `https://ipfs.io/ipfs/${_tokenUri?.substring(7,200)}`;
+      return formattedTokenUri
+  }
 
   //@ts-ignore
-  const formattedTokenUri = `https://ipfs.io/ipfs/${tokenUri?.substring(
-    7,
-    200
-  )}`;
-  console.log("uri", formattedTokenUri);
+  const formattedTokenUri = `https://ipfs.io/ipfs/${tokenUri?.substring(7,200)}`;
+  // console.log("uri", formattedTokenUri);
 
   const formattedTokenName = String(tokenName);
-  console.log("formattedTokenName", formattedTokenName);
+  // console.log("formattedTokenName", formattedTokenName);
 
   const formattedTokenDescription = String(tokenDescription);
-  console.log("formattedTokenDescription", formattedTokenDescription);
+  // console.log("formattedTokenDescription", formattedTokenDescription);
 
   return (
     <div className="group flex h-fit flex-col items-center gap-2 rounded-xl shadow-md shadow-primary">
@@ -60,7 +82,12 @@ const NFTcard = ({ item }: any) => {
           </p>
         </div>
         <button className="rounded-full bg-primary  py-2 text-base-100 hover:bg-base-100 hover:text-primary">
-          Purchase now
+          <Link
+              href={`/product/${tokenId}`}
+              className="duration-700 hover:text-slate-400"
+            >
+            Details
+          </Link>
         </button>
       </div>
       <div className="flex h-72 justify-center overflow-hidden rounded-lg">

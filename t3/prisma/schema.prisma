@@ -82,7 +82,7 @@ model ListedNft {
     startingTime Int
     isCancelled  Boolean
     endTime      Int
-    nft          Nft @relation(fields: [tokenId], references: [tokenId])
+    nft          Nft @relation(fields: [tokenId], references: [tokenId], onDelete: Cascade)
 
     @@unique([tokenId, startingTime])
 }
