@@ -204,7 +204,6 @@ export const getServerSideProps: GetServerSideProps = async () => {
   // const items = nfts; // good version
   const items = nfts.filter((nft: any) => nft.tokenId >= 10); // test version - delete the nfts that have incorrect IPFS token Uri
 
-  
   // console.log("items", items);
 
   return {
