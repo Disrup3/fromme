@@ -1,16 +1,21 @@
 import { NFTCreatedEvent } from "../event_types/nftfactorytypes";
 import { ethers } from "ethers";
-import {nftFactoryContract} from "../constants/contractsData";
+import { nftFactoryContract } from "../constants/contractsData";
 import { frommeMarketplaceContract } from "../constants/contractsData";
 import { callApi } from "../utils/apiUtils";
 import { PrismaClient } from "../client/generate";
 import { ItemListed } from "../utils/eventsUtils/itemListed";
 import { AuctionCreated } from "../utils/eventsUtils/AuctionCreated";
-import { BetAdded } from "../utils/eventsUtils/BetAdded";
+
+import { AuctionCanceled } from "../utils/eventsUtils/AuctionCanceled";
+import { BidAdded } from "../utils/eventsUtils/BidAdded";
+
 import { AuctionClaimed } from "../utils/eventsUtils/AuctionClaimed";
 import { ItemBought } from "../utils/eventsUtils/ItemBought";
 import { OfferAccepted } from "../utils/eventsUtils/OfferAccepted";
 import { OfferCreated } from "../utils/eventsUtils/OfferCreated";
+import { OfferCanceled } from "../utils/eventsUtils/OfferCanceled";
+import { ItemListCanceled } from "../utils/eventsUtils/ItemListCanceled";
 const provider = new ethers.providers.JsonRpcProvider(
     //utilizar variables de entorno posteriormente
     process.env.MUMBAI_RPC_PROVIDER ?? "http://127.0.0.1:8545/"
@@ -34,20 +39,29 @@ export const processNftMarketplaceEvents = async (startFromBlock:number, prisma:
     const handleMarketplaceEvents = async (events:any[]) => {
       // logic for handling paymentEvents
       for (const event of events) {
-        if (event.event === "AuctionCreated") {
-            AuctionCreated(event);
-        } else if (event.event === "BetAdded") {
-            BetAdded(event);
-        } else if (event.event === "AuctionClaimed") {
-            AuctionClaimed(event);
-        } else if (event.event === "ItemListed") {
-            ItemListed(event);
-        } else if (event.event === "ItemBought") {
-            ItemBought(event);
-        } else if (event.event === "OfferCreated") {
-            OfferCreated(event);
-        } else if (event.event === "OfferAccepted") {
-            OfferAccepted(event);
+
+        if(event.event === "AuctionCreated") {
+          AuctionCreated(event);
+        } else if(event.event === "BidAdded") { // Preguntar
+          BidAdded(event);
+        } else if(event.event === "AuctionClaimed") { // Preguntar
+          AuctionClaimed(event);
+        } else if(event.event === "AuctionCanceled") { // Preguntar
+          AuctionCanceled(event);
+        }
+        else if (event.event === "ItemListed") {
+          ItemListed(event);
+        } else if(event.event === "ItemBought") { // Dani
+          ItemBought(event);
+        } else if(event.event === "ItemListCanceled") { // Dani
+          ItemListCanceled(event);
+        } else if(event.event === "OfferCreated") {
+          OfferCreated(event);
+        } else if(event.event === "OfferAccepted") {
+          OfferAccepted(event);
+        } else if(event.event === "OfferCanceled") {
+          OfferCanceled(event);
+
         }
         // TODO: check evento de itemcancel
         lastBlockProcessed = event.blockNumber + 1;

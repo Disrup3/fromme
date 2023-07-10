@@ -72,7 +72,10 @@ model Nft {
     creator      String
     tokenUri     String
     feeNumerator Int
-    listedNfts   ListedNft[]
+
+    auctions   Auction[]
+    offers     Offer[]
+    listedNfts ListedNft[]
 }
 
 model ListedNft {
@@ -80,9 +83,32 @@ model ListedNft {
     seller       String?
     amount       BigInt?
     startingTime Int
-    isCancelled  Boolean
     endTime      Int
-    nft          Nft @relation(fields: [tokenId], references: [tokenId], onDelete: Cascade)
+    isCancelled  Boolean @default(false)
+
+    nft Nft @relation(fields: [tokenId], references: [tokenId], onDelete: Cascade)
 
     @@unique([tokenId, startingTime])
+}
+
+model Auction {
+    nft            Nft     @relation(fields: [tokenId], references: [tokenId], onDelete: Cascade)
+    tokenId        Int
+    seller         String?
+    startingAmount BigInt?
+    startingTime   Int
+    endTime        Int
+    isCancelled    Boolean @default(false)
+
+    @@unique([tokenId, startingTime])
+}
+
+model Offer {
+    nft         Nft     @relation(fields: [tokenId], references: [tokenId], onDelete: Cascade)
+    tokenId     Int
+    buyer       String
+    amount      BigInt
+    isCancelled Boolean @default(false)
+
+    @@unique([tokenId, buyer])
 }

@@ -18,6 +18,7 @@ export default function useNftfactoryContract({
   _feeNumerator: bigint;
   onSuccessfulCreateNFT: () => void;
 }) {
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   //const { config: createNFTconfig } = usePrepareContractWrite({
   //  abi: NFTFactory_abi,
@@ -39,6 +40,7 @@ export default function useNftfactoryContract({
       setIsLoading(false);
     },
   });
+
 
   useWaitForTransaction({
     hash: createNFTdata?.hash,
