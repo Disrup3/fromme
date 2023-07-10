@@ -26,7 +26,7 @@ const Navbar = () => {
           <div className="hidden gap-5 md:flex md:text-xs lg:text-base">
             {/* TODO: Actualizar estos enlaces, de haberlos */}
             <Link
-              href={"/collections"}
+              href={"/explore"}
               className="duration-700 hover:text-slate-400"
             >
               Collections

@@ -1,7 +1,7 @@
 import { prisma } from "~/server/db";
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(
+export default async function handler( 
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
@@ -15,7 +15,6 @@ export default async function handler(
     await checkNftExists(tokenId, seller, amount, startingTime, endTime);
     return res.status(200).json({message: "ok"})
   } catch (error) {
-    console.log(error);
     return res.status(500).json({message: JSON.stringify(error)});
   }
 }
@@ -23,19 +22,24 @@ export default async function handler(
 const checkNftExists = async (tokenId: number, seller: string, amount: number, startingTime: number, endTime: number) => {
   const item = await prisma.listedNft.findUnique({
     where: {
-      tokenId: tokenId,
+      tokenId_startingTime: {
+        tokenId, startingTime,
+      }
     }
   });
   if(item) {
     await prisma.listedNft.update({
       where: {
-        tokenId: tokenId,
+        tokenId_startingTime: {
+          tokenId, startingTime,
+        }
       },
       data: {
         seller,
         amount,
         startingTime,
         endTime,
+        isCancelled: false,
       }
     });
   } else {
@@ -45,7 +49,7 @@ const checkNftExists = async (tokenId: number, seller: string, amount: number, s
         seller,
         amount,
         startingTime,
-        endTime
+        endTime, 
       }
     });
   }

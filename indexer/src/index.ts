@@ -3,6 +3,7 @@ import { Dead_events_queue } from "./client/generate";
 import { nftFactoryContract } from "./constants/contractsData";
 import { prisma } from "./db"
 import { processFactoryTrackerEvents } from "./services/nftFactoryTracker";
+import { processNftMarketplaceEvents } from "./services/nftMarketplaceTracker";
 import { callApi } from "./utils/apiUtils";
 
 
@@ -22,8 +23,9 @@ const connect = async () => {
   }
 
   const trackContractCallback = async () => {
-    const lastBlocks = await prisma.tracker_State.findMany();
+    const lastBlocks = await prisma.tracker_State.findMany(); 
     await processFactoryTrackerEvents(lastBlocks[0].lastBlockProcessed, prisma);
+    await processNftMarketplaceEvents(lastBlocks[0].lastBlockProcessed, prisma);
     await processDeadEvents();
     setTimeout(() => trackContractCallback(), 2000); // Recursividad de trackeo
   };

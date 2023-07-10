@@ -723,6 +723,11 @@ export namespace Prisma {
           result: $Utils.OptionalFlat<Tracker_State>
           payload: Tracker_StatePayload<ExtArgs>
         }
+        createMany: {
+          args: Prisma.Tracker_StateCreateManyArgs<ExtArgs>,
+          result: $Utils.OptionalFlat<Tracker_State>
+          payload: Tracker_StatePayload<ExtArgs>
+        }
         delete: {
           args: Prisma.Tracker_StateDeleteArgs<ExtArgs>,
           result: $Utils.OptionalFlat<Tracker_State>
@@ -792,6 +797,11 @@ export namespace Prisma {
         }
         create: {
           args: Prisma.Dead_events_queueCreateArgs<ExtArgs>,
+          result: $Utils.OptionalFlat<Dead_events_queue>
+          payload: Dead_events_queuePayload<ExtArgs>
+        }
+        createMany: {
+          args: Prisma.Dead_events_queueCreateManyArgs<ExtArgs>,
           result: $Utils.OptionalFlat<Dead_events_queue>
           payload: Dead_events_queuePayload<ExtArgs>
         }
@@ -1323,6 +1333,22 @@ export namespace Prisma {
     ): Prisma__Tracker_StateClient<$Types.GetResult<Tracker_StatePayload<ExtArgs>, T, 'create', never>, never, ExtArgs>
 
     /**
+     * Create many Tracker_States.
+     *     @param {Tracker_StateCreateManyArgs} args - Arguments to create many Tracker_States.
+     *     @example
+     *     // Create many Tracker_States
+     *     const tracker_State = await prisma.tracker_State.createMany({
+     *       data: {
+     *         // ... provide data here
+     *       }
+     *     })
+     *     
+    **/
+    createMany<T extends Tracker_StateCreateManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, Tracker_StateCreateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
      * Delete a Tracker_State.
      * @param {Tracker_StateDeleteArgs} args - Arguments to delete one Tracker_State.
      * @example
@@ -1790,6 +1816,18 @@ export namespace Prisma {
 
 
   /**
+   * Tracker_State createMany
+   */
+  export type Tracker_StateCreateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Tracker_States.
+     */
+    data: Enumerable<Tracker_StateCreateManyInput>
+    skipDuplicates?: boolean
+  }
+
+
+  /**
    * Tracker_State update
    */
   export type Tracker_StateUpdateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
@@ -2187,6 +2225,22 @@ export namespace Prisma {
     create<T extends Dead_events_queueCreateArgs<ExtArgs>>(
       args: SelectSubset<T, Dead_events_queueCreateArgs<ExtArgs>>
     ): Prisma__Dead_events_queueClient<$Types.GetResult<Dead_events_queuePayload<ExtArgs>, T, 'create', never>, never, ExtArgs>
+
+    /**
+     * Create many Dead_events_queues.
+     *     @param {Dead_events_queueCreateManyArgs} args - Arguments to create many Dead_events_queues.
+     *     @example
+     *     // Create many Dead_events_queues
+     *     const dead_events_queue = await prisma.dead_events_queue.createMany({
+     *       data: {
+     *         // ... provide data here
+     *       }
+     *     })
+     *     
+    **/
+    createMany<T extends Dead_events_queueCreateManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, Dead_events_queueCreateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
 
     /**
      * Delete a Dead_events_queue.
@@ -2656,6 +2710,18 @@ export namespace Prisma {
 
 
   /**
+   * Dead_events_queue createMany
+   */
+  export type Dead_events_queueCreateManyArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Dead_events_queues.
+     */
+    data: Enumerable<Dead_events_queueCreateManyInput>
+    skipDuplicates?: boolean
+  }
+
+
+  /**
    * Dead_events_queue update
    */
   export type Dead_events_queueUpdateArgs<ExtArgs extends $Extensions.Args = $Extensions.DefaultArgs> = {
@@ -2755,6 +2821,9 @@ export namespace Prisma {
    */
 
   export const TransactionIsolationLevel: {
+    ReadUncommitted: 'ReadUncommitted',
+    ReadCommitted: 'ReadCommitted',
+    RepeatableRead: 'RepeatableRead',
     Serializable: 'Serializable'
   };
 
@@ -2785,6 +2854,14 @@ export namespace Prisma {
   };
 
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+  export const QueryMode: {
+    default: 'default',
+    insensitive: 'insensitive'
+  };
+
+  export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
   /**
@@ -2894,6 +2971,12 @@ export namespace Prisma {
     chainId?: StringFieldUpdateOperationsInput | string
   }
 
+  export type Tracker_StateCreateManyInput = {
+    contractAddress: string
+    lastBlockProcessed: number
+    chainId: string
+  }
+
   export type Tracker_StateUpdateManyMutationInput = {
     contractAddress?: StringFieldUpdateOperationsInput | string
     lastBlockProcessed?: IntFieldUpdateOperationsInput | number
@@ -2928,6 +3011,12 @@ export namespace Prisma {
     data?: StringFieldUpdateOperationsInput | string
   }
 
+  export type Dead_events_queueCreateManyInput = {
+    id?: number
+    eventName: string
+    data: string
+  }
+
   export type Dead_events_queueUpdateManyMutationInput = {
     eventName?: StringFieldUpdateOperationsInput | string
     data?: StringFieldUpdateOperationsInput | string
@@ -2950,6 +3039,7 @@ export namespace Prisma {
     contains?: string
     startsWith?: string
     endsWith?: string
+    mode?: QueryMode
     not?: NestedStringFilter | string
   }
 
@@ -3001,6 +3091,7 @@ export namespace Prisma {
     contains?: string
     startsWith?: string
     endsWith?: string
+    mode?: QueryMode
     not?: NestedStringWithAggregatesFilter | string
     _count?: NestedIntFilter
     _min?: NestedStringFilter

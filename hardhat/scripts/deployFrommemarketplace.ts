@@ -2,7 +2,7 @@ import { ethers, network } from "hardhat";
 
 async function main() {
 
-  const NFTFACTORY_ADDRESS = "0xe0e34037e33FbB36ec89de6cB92477f7Bb5B04A7";
+  const NFTFACTORY_ADDRESS = "0x8aF1CADcFC8bA57C78AEC34913A14C6294B07c51"; // mumbai
 
   // Contracts are deployed using the first signer/account by default
   const [owner, account1, account2] = await ethers.getSigners();
