@@ -178,6 +178,7 @@ const explore = ({ items }: { items: any }) => {
       </div>
       <div className="flex flex-wrap justify-center gap-5 p-8">
         {items?.map((item: ExploreItem, index: any) => {
+          // console.log('explore ::::', index, item)
           return <NFTcard key={index} item={item} />;
         })}
       </div>
@@ -186,20 +187,25 @@ const explore = ({ items }: { items: any }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const listedNfts = await prisma.listedNft.findMany({
-    include: {
-      nft: true,
-    },
-  });
-  listedNfts.map((listedNft) => {
-    listedNft.amount = listedNft.amount?.toString();
-  });
-  console.log("listedNfts", listedNfts);
+  // const listedNfts = await prisma.listedNft.findMany({
+  //   include: {
+  //     nft: true,
+  //   },
+  // });
+  // listedNfts.map((listedNft) => {
+  //   listedNft.amount = listedNft.amount?.toString();
+  // });
+  // console.log("listedNfts", listedNfts);
 
   const nfts = await prisma.nft.findMany({});
-  console.log("nfts", nfts);
+  // console.log("nfts", nfts);
 
-  const items = [nfts, listedNfts];
+  // const items = [nfts, listedNfts]; // old version - no need to repeat the listed
+  // const items = nfts; // good version
+  const items = nfts.filter((nft: any) => nft.tokenId >= 10); // test version - delete the nfts that have incorrect IPFS token Uri
+
+  
+  // console.log("items", items);
 
   return {
     props: { items },

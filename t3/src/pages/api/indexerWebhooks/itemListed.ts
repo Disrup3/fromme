@@ -41,6 +41,7 @@ const checkNftExists = async (tokenId: number, seller: string, amount: number, s
         amount,
         startingTime,
         endTime,
+        isCancelled: false
       }
     });
   } else {
@@ -51,7 +52,8 @@ const checkNftExists = async (tokenId: number, seller: string, amount: number, s
         seller,
         amount,
         startingTime,
-        endTime
+        endTime,
+        isCancelled: false
       }
     });
   }

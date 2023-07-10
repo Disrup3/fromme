@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 // Load environment variables from .env file
 // dotenv.config({ path: '..\..\..\.env' });
 
-export default async function useListItem(_tokenId: number, _amount: number, _durationInSeconds: number) {
+export default async function useCancelList(_tokenId: number) {
   try {
 
     const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
@@ -16,13 +16,8 @@ export default async function useListItem(_tokenId: number, _amount: number, _du
 
     const contract = new ethers.Contract(addresses.FrommeMarketplace, FrommeMarketplace_abi, signer);
 
-    // Example function to send a transaction to the contract
     async function sendTransactionToContract() {
-
-      const amountInWei = ethers.utils.parseEther(_amount.toString());
-      // console.log(amountInWei)
-
-      const tx = await contract.listItem(_tokenId, amountInWei, _durationInSeconds);
+      const tx = await contract.cancelList(_tokenId);
       await tx.wait(); // Wait for the transaction to be mined
       console.log('Transaction mined!');
     }
