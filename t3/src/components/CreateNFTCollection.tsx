@@ -115,13 +115,18 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
 
   return (
     <form
-      onSubmit={handleSubmit((data) => {
-        if (data.image) {
-          setInvalidImage(true);
-        }
-        changeIsLoading(true);
-        onSubmit(data);
-      })}
+      onSubmit={
+        () => {
+        void (() => {
+          handleSubmit((data) => {
+            if (data.image) {
+              setInvalidImage(true);
+            }
+            changeIsLoading(true);
+            onSubmit(data);
+          })
+        })();
+      }}
       className="mb-[7vh] flex min-w-[300px] flex-col items-center gap-3 bg-base-100 p-4 text-primary lg:mb-4"
     >
       {/* Título */}
@@ -158,7 +163,7 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
         >
           {({ getRootProps, getInputProps }) => (
             <section>
-              <div {...getRootProps({ style })}>
+              <div {...getRootProps(style)}>
                 <input {...getInputProps()} />
                 <p>Drag and drop some files here, or click to select files</p>
               </div>
