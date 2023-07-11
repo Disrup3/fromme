@@ -31,7 +31,6 @@ export default function useCreateAuction({
   const {
     write: createAuctionWrite,
     data: createAuctionData,
-    error: createAuctionError,
   } = useContractWrite({
     ...createAuctionConfig,
     onError: () => {

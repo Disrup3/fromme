@@ -1,9 +1,7 @@
 import { type NextPage } from "next";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import Head from "next/head";
-import { api } from "~/utils/api";
 
-import { ConnectButton } from "@rainbow-me/rainbowkit"; //TEST
 import GetStarted from "~/components/ui/GetStarted";
 import HeroSection from "~/components/ui/HeroSection";
 import Carousel from "~/components/ui/Carousel";
@@ -42,7 +40,7 @@ const Home: NextPage = () => {
     },
   ];
 
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   console.log("session", session);
 
   return (

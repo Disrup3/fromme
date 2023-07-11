@@ -5,12 +5,10 @@ import {
   type NextAuthOptions,
   type DefaultSession,
 } from "next-auth";
-import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { getCsrfToken } from "next-auth/react";
 import { SiweMessage } from "siwe";
-import { IncomingMessage } from "http";
 import type { CtxOrReq } from "next-auth/client/_utils";
 
 /**

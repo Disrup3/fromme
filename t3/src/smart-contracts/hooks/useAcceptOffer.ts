@@ -27,7 +27,6 @@ export default function useAcceptOffer({
   const {
     write: acceptOfferWrite,
     data: acceptOfferData,
-    error: acceptOfferError,
   } = useContractWrite({
     ...acceptOfferConfig,
     onError: () => {

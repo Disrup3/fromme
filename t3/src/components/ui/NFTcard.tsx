@@ -1,7 +1,5 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AiFillHeart } from "react-icons/ai";
-import { useState, FC, useEffect, SetStateAction } from "react";
-import { getInitials } from "~/utils/ui";
+import { useState, useEffect, SetStateAction } from "react";
 import Image from "next/image";
 import axios from "axios";
 import Link from "next/link";

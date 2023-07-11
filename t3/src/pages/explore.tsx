@@ -1,7 +1,5 @@
 import { useState } from "react";
 import NFTcard from "../components/ui/NFTcard";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { GetServerSideProps } from "next";
 import { prisma } from "~/server/db";
 
@@ -103,14 +101,13 @@ const explore = ({ items }: { items: ExploreItem[] }) => {
         {/* <!-- Checkboxes categories --> */}
         <p>Category</p>
         {categoriesSelected.map((category, index) => (
-          <div className="form-control" key={index} onClick={() => {}}>
+          <div className="form-control" key={index}>
             <label className="label cursor-pointer">
               <span className="label-text">{category.name}</span>
               <input
                 type="checkbox"
                 checked={category.selected}
                 className="checkbox-primary checkbox"
-                onChange={() => {}}
               />
             </label>
           </div>
@@ -118,14 +115,13 @@ const explore = ({ items }: { items: ExploreItem[] }) => {
         {/* <!-- Checkboxes origin --> */}
         <p>Origin</p>
         {originSelected.map((category, index) => (
-          <div className="form-control" key={index} onClick={() => {}}>
+          <div className="form-control" key={index}>
             <label className="label cursor-pointer">
               <span className="label-text">{category.name}</span>
               <input
                 type="checkbox"
                 checked={category.selected}
                 className="checkbox-primary checkbox"
-                onChange={() => {}}
               />
             </label>
           </div>
@@ -146,8 +142,6 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
   const nfts = await prisma.nft.findMany({});
   const items = nfts.filter((nft: any) => nft.tokenId >= 10); // test version - delete the nfts that have incorrect IPFS token Uri
-
-  // console.log("items", items);
 
   return {
     props: { items },

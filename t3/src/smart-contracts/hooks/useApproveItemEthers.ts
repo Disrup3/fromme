@@ -1,7 +1,6 @@
 
 import { addresses, NFTFactory_abi } from "../constants";
 import { ethers } from 'ethers';
-import dotenv from 'dotenv';
 
 declare global {
   interface Window {

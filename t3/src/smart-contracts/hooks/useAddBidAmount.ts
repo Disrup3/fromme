@@ -27,7 +27,6 @@ export default function useAddBidAmount({
   const {
     write: addBidAmountWrite,
     data: addBidAmountData,
-    error: addBidAmountError,
   } = useContractWrite({
     ...addBidAmountConfig,
     onError: () => {

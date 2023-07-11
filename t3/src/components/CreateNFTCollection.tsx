@@ -4,7 +4,6 @@ import {
   Dispatch,
   FC,
   SetStateAction,
-  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -24,13 +23,10 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
     setValue,
   } = useForm<FormCreate>();
 
-
-
   const [invalidImage, setInvalidImage] = useState<boolean>(false);
   const [tokenUri, setTokenUri] = useState({});
 
-  const {
-    // Web hook para interactuar con el contrato
+  const { // Web hook para interactuar con el contrato
     write,
     isLoading,
     changeIsLoading,
@@ -38,20 +34,17 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
     _tokenURI: "",
     _feeNumerator: BigInt(0),
     onSuccessfulCreateNFT: () => {
-      // setSubmitLoading(false);
       setInvalidImage(false);
     },
   });
 
-  watch((data) => {
-    // Envia el form a create.tsx cada vez que hay un cambio
+  watch((data) => { // Envia el form a create.tsx cada vez que hay un cambio
     onChangeForm(data);
   });
 
   const onSubmit: SubmitHandler<FormCreate> = async (data) => {
     const token = process.env.NEXT_PUBLIC_NFT_STORAGE_TOKEN || "";
     try {
-      // setSubmitLoading(true); // Reconocer cuando está procesandose una transacción en Metamask para mostrarlo con un loading
       const uriJson = {
         name: data.title!,
         description: data.description!,
@@ -69,7 +62,6 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
       console.log("tokenUri", tokenUri);
       write?.({ args: [metadata.url, 1100] });
     } catch (err: any) {
-      // setSubmitLoading(false);
       console.log(err);
     }
   };
@@ -103,7 +95,23 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
   const rejectStyle = {
     borderColor: "#ff1744",
   };
-  const style: any = useMemo(
+
+  type styleType = {
+    borderColor: string;
+    flex: number;
+    display: string;
+    alignItems: string;
+    padding: string;
+    borderWidth: number;
+    borderRadius: number;
+    borderStyle: string;
+    backgroundColor: string;
+    color: string;
+    outline: string;
+    transition: string;
+  };
+
+  const style: styleType = useMemo(
     () => ({
       ...baseStyle,
       ...(isFocused ? focusedStyle : {}),
@@ -117,16 +125,17 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
     <form
       onSubmit={
         () => {
-        void (() => {
-          handleSubmit((data) => {
-            if (data.image) {
-              setInvalidImage(true);
-            }
-            changeIsLoading(true);
-            onSubmit(data);
-          })
-        })();
-      }}
+          void (() => {
+            handleSubmit((data) => {
+              if(data.image) {
+                setInvalidImage(true);
+              }
+              changeIsLoading(true);
+              onSubmit(data);
+            })
+          })();
+        }
+      }
       className="mb-[7vh] flex min-w-[300px] flex-col items-center gap-3 bg-base-100 p-4 text-primary lg:mb-4"
     >
       {/* Título */}
@@ -189,16 +198,6 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
         </select>
         {errors.category && <span className="text-accent">Required field</span>}
       </div>
-      {/* Precio */}
-      {/* <div className="flex w-full flex-col">
-        <label>Price:</label>
-        <input
-          type="number"
-          className="input-bordered input w-full"
-          {...register("price", { required: false, min: 0 })}
-        />
-        {errors.price && <span className="text-accent">Invalid price</span>}
-      </div> */}
       {/* Royalties */}
       <div className="flex w-full flex-col">
         <label>Royalties:</label>
