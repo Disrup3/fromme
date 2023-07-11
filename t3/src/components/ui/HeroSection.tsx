@@ -18,7 +18,7 @@ const HeroSection = () => {
       className="flex h-[82vh] mb-[8vh] w-full flex-col items-center justify-center text-center gap-7 relative px-[8vw]"
     >
       <h1 className="text-6xl font-bold"><span className="text-primary">New World </span>of Digital Collectibles</h1>
-      <h2 className="text-xl font-semibold">Buy and sell NFTs from the world's top artists</h2>
+      <h2 className="text-xl font-semibold">Buy and sell NFTs from the world&apos;s top artists</h2>
       <div className="flex justify-center gap-7">
         <Link className="rounded-full bg-primary px-7 py-3 text-xs font-semibold text-base-100" href={"/explore"}>
           Start Exploring

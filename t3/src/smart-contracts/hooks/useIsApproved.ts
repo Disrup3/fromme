@@ -1,8 +1,6 @@
 
 import { addresses, NFTFactory_abi } from "../constants";
 import { ethers } from 'ethers';
-import dotenv from 'dotenv';
-
 
 export default async function useIsApproved(tokenId: number) {
   try {

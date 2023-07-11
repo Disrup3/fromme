@@ -14,7 +14,6 @@ import useIsApproved from "../../smart-contracts/hooks/useIsApproved";
 import useListItem from "../../smart-contracts/hooks/useListItemEthers";
 import useCancelList from "../../smart-contracts/hooks/useCancelListEthers";
 import useApproveItem from "../../smart-contracts/hooks/useApproveItemEthers";
-import useBuyItem from "../../smart-contracts/hooks/useBuyItem";
 import axios from "axios";
 import shortenAddress from "~/utils/shortenAddress";
 
@@ -45,7 +44,7 @@ const NFTProduct = ({
     durationList: 0,
   });
 
-  async function formatTokenUri(_tokenUri: string) {
+  function formatTokenUri(_tokenUri: string) {
     const formattedTokenUri = `https://ipfs.io/ipfs/${_tokenUri?.substring(
       7,
       200
@@ -55,11 +54,11 @@ const NFTProduct = ({
 
   useEffect(() => {
     const getTokenUri = async () => {
-      const _formattedTokenUri = await formatTokenUri(tokenUri);
+      const _formattedTokenUri = formatTokenUri(tokenUri);
       const metadataIPFS = await axios.get(_formattedTokenUri);
 
       const image = metadataIPFS.data.image;
-      const formattedImage = await formatTokenUri(image);
+      const formattedImage = formatTokenUri(image);
 
       setTokenImage(formattedImage);
     };
@@ -110,11 +109,6 @@ const NFTProduct = ({
   const creatorFeeInPerc: string = `${((creatorFee / 10000) * 100).toFixed(
     decimalPlaces
   )}%`;
-
-  function handleBuyItem() {
-    useBuyItem(nftId);
-    return 1;
-  }
 
   return (
     <div className="flex w-full justify-evenly p-6">

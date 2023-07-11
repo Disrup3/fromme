@@ -31,7 +31,7 @@ const Carousel: FC<Props> = ({ items }) => {
   };
 
   useEffect(() => {
-    let timer = setTimeout(handleClickNext, 10000);
+    const timer = setTimeout(handleClickNext, 10000);
     return () => clearTimeout(timer);
   }, [currentSlide]);
 

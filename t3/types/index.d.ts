@@ -15,12 +15,11 @@ interface FormCreate {
 }
 
 interface ExploreItem {
-  image: string;
-  title: string;
+  tokenId: number;
+  tokenUri: string;
+  amount: number;
   creator: string;
-  favorites: number;
-  stock: number;
-  amount: number | string;
+  stock: number | null;
 }
 
 interface selectable {

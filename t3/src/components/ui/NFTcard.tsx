@@ -1,7 +1,5 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AiFillHeart } from "react-icons/ai";
-import { useState, FC, useEffect } from "react";
-import { getInitials } from "~/utils/ui";
+import { useState, useEffect, SetStateAction } from "react";
 import Image from "next/image";
 import axios from "axios";
 import Link from "next/link";
@@ -18,19 +16,19 @@ import shortenAddress from "../../utils/shortenAddress";
 //  return metadataIPFS;
 //};
 
-const NFTcard = ({ item }: any) => {
-  const [tokenId, setTokenId] = useState();
-  const [tokenUri, setTokenUri] = useState();
-  const [tokenName, setTokenName] = useState();
-  const [tokenDescription, setTokenDescription] = useState();
+const NFTcard = ({ item }: { item: ExploreItem }) => {
+  const [tokenId, setTokenId] = useState<number>();
+  const [tokenUri, setTokenUri] = useState<string>();
+  const [tokenName, setTokenName] = useState<string>();
+  const [tokenDescription, setTokenDescription] = useState<string>();
 
   useEffect(() => {
     const getIPFSMetadata = async () => {
       // console.log(item.tokenId)
-      setTokenId(item.tokenId);
+      setTokenId(item.tokenId as SetStateAction<number | undefined>);
 
       try {
-        const _tokenUri = await item.tokenUri;
+        const _tokenUri = item.tokenUri;
         const _formattedTokenUri = await formatTokenUri(_tokenUri);
         const metadataIPFS = await axios.get(_formattedTokenUri);
         console.log(metadataIPFS);
