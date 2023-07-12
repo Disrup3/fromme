@@ -10,8 +10,14 @@ export default async function handler(
     return res.status(400).json({message: "unauthorized"});
   }
 
-  // NFT Created  
-  const {tokenId, creator, tokenUri, feeNumerator} = req.body;
+  type Body = {
+    tokenId: number,
+    creator: string,
+    tokenUri: string,
+    feeNumerator: number,
+  }
+
+  const {tokenId, creator, tokenUri, feeNumerator} = req.body as Body;
 
   try {
     await checkNftExistAndCreate(tokenId, creator, tokenUri, feeNumerator); 

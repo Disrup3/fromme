@@ -8,8 +8,15 @@ export default async function handler(
   if(!(req.method === "POST")) {
     return res.status(400).json({message: "unauthorized"});
   }
-  // Item Listed  
-  const { tokenId, seller, buyer, amount } = req.body;
+  
+  type Body = {
+    tokenId: number,
+    seller: string,
+    buyer: string,
+    amount: number,
+  }
+  
+  const { tokenId, seller, buyer, amount } = req.body as Body;
 
   try {
     const foundRow: boolean = await checkNftExists(tokenId, seller, buyer, amount );
