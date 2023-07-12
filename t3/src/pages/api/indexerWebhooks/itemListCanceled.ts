@@ -8,11 +8,16 @@ export default async function handler(
   if(!(req.method === "POST")) {
     return res.status(400).json({message: "unauthorized"});
   }
-  // Item Listed  
-  const { tokenId, seller, amount, startingTime, endTime } = req.body;
+  
+  type Body = {
+    tokenId: number,
+    startingTime: number,
+  }
+
+  const { tokenId, startingTime } = req.body as Body;
 
   try {
-    const foundRow: boolean = await checkNftExists(tokenId, seller, amount, startingTime, endTime);
+    const foundRow: boolean = await checkNftExists(tokenId, startingTime);
     return foundRow
     ? res.status(200).json({message: "ok"})
     : res.status(412).json({message: "Nonexisting offer"});
@@ -21,7 +26,7 @@ export default async function handler(
   }
 }
 
-const checkNftExists = async (tokenId: number, seller: string, amount: number, startingTime: number, endTime: number) => {
+const checkNftExists = async (tokenId: number, startingTime: number) => {
   const listedNft = await prisma.listedNft.findUnique({
     where: {
         tokenId_startingTime: {

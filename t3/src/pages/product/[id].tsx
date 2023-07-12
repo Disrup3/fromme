@@ -9,18 +9,37 @@ import { useEffect, useState } from "react";
 
 import { addresses } from "../../smart-contracts/constants";
 
-import useReadOwnerOf from "../../smart-contracts/hooks/useReadOwnerOf";
-import useIsApproved from "../../smart-contracts/hooks/useIsApproved";
+import ReadOwnerOf from "../../smart-contracts/hooks/useReadOwnerOf";
+import IsApproved from "../../smart-contracts/hooks/useIsApproved";
 import useListItem from "../../smart-contracts/hooks/useListItemEthers";
 import useCancelList from "../../smart-contracts/hooks/useCancelListEthers";
 import useApproveItem from "../../smart-contracts/hooks/useApproveItemEthers";
-import useBuyItem from "../../smart-contracts/hooks/useBuyItem";
 import axios from "axios";
 import shortenAddress from "~/utils/shortenAddress";
+
+interface MetadataIPFS {
+  data: {
+    image: string;
+  }
+}
 
 type ListItemData = {
   amountList: number;
   durationList: number;
+};
+
+type NFTProductProps = {
+  nftId: number,
+  tokenUri: string,
+  creatorAddress: string,
+  creatorFee: number,
+  creatorName: string,
+  sellerAddress: string,
+  sellerName: string,
+  amount: number,
+  isListed: boolean,
+  isOwner: boolean,
+  isApproved: boolean,
 };
 
 const NFTProduct = ({
@@ -35,8 +54,7 @@ const NFTProduct = ({
   isListed,
   isOwner,
   isApproved,
-}: any) => {
-  // console.log('tokenUri :: ', tokenUri)
+}: NFTProductProps) => {
 
   const [tokenImage, setTokenImage] = useState("");
   const [showFormList, setShowFormList] = useState(false);
@@ -45,32 +63,29 @@ const NFTProduct = ({
     durationList: 0,
   });
 
-  async function formatTokenUri(_tokenUri: string) {
-    const formattedTokenUri = `https://ipfs.io/ipfs/${_tokenUri?.substring(
-      7,
-      200
-    )}`;
+  function formatTokenUri(_tokenUri: string) {
+    const formattedTokenUri = `https://ipfs.io/ipfs/${_tokenUri?.substring(7, 200)}`;
     return formattedTokenUri;
   }
 
   useEffect(() => {
     const getTokenUri = async () => {
-      const _formattedTokenUri = await formatTokenUri(tokenUri);
-      const metadataIPFS = await axios.get(_formattedTokenUri);
+      const _formattedTokenUri = formatTokenUri(tokenUri);
+      const metadataIPFS: MetadataIPFS = await axios.get(_formattedTokenUri);
 
       const image = metadataIPFS.data.image;
-      const formattedImage = await formatTokenUri(image);
+      const formattedImage = formatTokenUri(image);
 
       setTokenImage(formattedImage);
     };
-    getTokenUri();
+    void getTokenUri();
   }, []);
 
   const handleListItem = () => {
     setShowFormList(true);
   };
 
-  const handleListItemSubmit = async (e: React.FormEvent) => {
+  const HandleListItemSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     setFormDataList(formDataList);
@@ -86,12 +101,12 @@ const NFTProduct = ({
     console.log("Item Listed");
   };
 
-  const handleCancelListSubmit = async (e: React.FormEvent) => {
+  const HandleCancelListSubmit = async (e: React.FormEvent) => {
     await useCancelList(nftId);
     console.log("List Canceled");
   };
 
-  const handleApproveItem = async (e: React.FormEvent) => {
+  const HandleApproveItem = async (e: React.FormEvent) => {
     await useApproveItem(nftId);
     console.log("Item Approved");
   };
@@ -106,15 +121,7 @@ const NFTProduct = ({
     ethValue = ethers.utils.formatEther(amount);
   }
 
-  const decimalPlaces: number = 2;
-  const creatorFeeInPerc: string = `${((creatorFee / 10000) * 100).toFixed(
-    decimalPlaces
-  )}%`;
-
-  function handleBuyItem() {
-    useBuyItem(nftId);
-    return 1;
-  }
+  const creatorFeeInPerc: string = ((creatorFee / 10000) * 100).toFixed(2) + "%";
 
   return (
     <div className="flex w-full justify-evenly p-6">
@@ -186,7 +193,7 @@ const NFTProduct = ({
           {isListed == true && isOwner == true && (
             <button
               className="w-full rounded-full bg-red-500 py-2 font-semibold text-base-100"
-              onClick={handleCancelListSubmit}
+              onClick={() => HandleCancelListSubmit}
             >
               Cancel Listing
             </button>
@@ -194,7 +201,7 @@ const NFTProduct = ({
           {isListed == false && isOwner == true && isApproved == false && (
             <button
               className="w-full rounded-full bg-gray-500 py-2 font-semibold text-base-100"
-              onClick={handleApproveItem}
+              onClick={() => HandleApproveItem}
             >
               Approve Item
             </button>
@@ -208,7 +215,7 @@ const NFTProduct = ({
             </button>
           )}
           {showFormList && (
-            <form onSubmit={handleListItemSubmit}>
+            <form onSubmit={() => HandleListItemSubmit}>
               <input
                 className="mr-2 mt-2 appearance-none rounded border border-gray-400 bg-white px-4 py-2 leading-tight focus:border-blue-500 focus:outline-none"
                 type="number"
@@ -241,18 +248,6 @@ const NFTProduct = ({
             </Link>
           </p>
         </div>
-
-        {/* <div className="flex flex-col items-center gap-4 rounded-lg border p-6">
-          <button className="w-full rounded-full bg-primary py-2 font-semibold text-base-100">
-            Purchase
-          </button>
-          <p className="font-semibold text-gray-400">
-            Transfer History{" "}
-            <Link href={"#"} className="text-secondary">
-              Click Here
-            </Link>
-          </p>
-        </div> */}
       </div>
       {/* <div className="h-[450px] w-1/3 rounded-lg bg-test bg-cover bg-center"> */}
       <div>
@@ -271,24 +266,19 @@ const NFTProduct = ({
   );
 };
 
-export default NFTProduct;
-
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getSession(ctx);
-  // console.log('session', session)
-
   const userAddress = session?.user.name;
-  // console.log('userAddress', userAddress)
 
   // from the query data, get nftId
   // from nftId get everything else (nft creator, if is listed the seller, etc.)
   const nftId = parseInt(ctx.query.id as string);
   console.log("nftId:", nftId);
 
-  const ownerOFNft = await useReadOwnerOf(nftId);
+  const ownerOFNft = await ReadOwnerOf(nftId);
   console.log("ownerOFNft", ownerOFNft);
 
-  const addressApproved = await useIsApproved(nftId);
+  const addressApproved = await IsApproved(nftId) as string;
   const isApproved = addresses.FrommeMarketplace == addressApproved;
   console.log("isApproved", isApproved);
 
@@ -310,7 +300,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       tokenId: nftId,
     },
   });
-  // console.log('nftData :', nftData);
+
   const creatorAddress = nftData?.creator;
   const creatorFee = nftData?.feeNumerator;
   const tokenUri = nftData?.tokenUri;
@@ -337,7 +327,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       address: creatorAddress,
     },
   });
-  // console.log('creatorData :', creatorData);
 
   // Is NFT listed?
   if (listedNftData) {
@@ -352,7 +341,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         address: sellerAddress || "failSellerAddress",
       },
     });
-    // console.log('sellerData :', sellerData);
 
     // If the list is still active - *100 because miliseconds to seconds
     if (currentTimestamp < listedNftData.endTime * 1000) {
@@ -394,3 +382,5 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     },
   };
 };
+
+export default NFTProduct;

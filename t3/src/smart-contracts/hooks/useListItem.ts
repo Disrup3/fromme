@@ -31,7 +31,6 @@ export default function useListItem({
   const {
     write: listItemWrite,
     data: listItemData,
-    error: listItemError,
   } = useContractWrite({
     ...listItemConfig,
     onError: () => {

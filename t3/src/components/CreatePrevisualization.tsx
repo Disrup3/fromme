@@ -2,7 +2,7 @@ import { FC } from "react";
 
 interface Props {
   form: FormCreate,
-};
+}
 
 const CreatePrevisualization: FC<Props> = ({ form }) => {
   return (

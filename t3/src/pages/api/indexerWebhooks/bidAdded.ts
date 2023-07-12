@@ -9,7 +9,13 @@ export default async function handler(
     return res.status(400).json({message: "unauthorized"});
   }
 
-  const { tokenId, currentAmount, currentBuyer } = req.body;
+  type Body = {
+    tokenId: number,
+    currentAmount: number,
+    currentBuyer: string,
+  }
+
+  const { tokenId, currentAmount, currentBuyer } = req.body as Body;
 
   try {
     await checkOfferExists(tokenId, currentAmount, currentBuyer);

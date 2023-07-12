@@ -5,12 +5,10 @@ import {
   type NextAuthOptions,
   type DefaultSession,
 } from "next-auth";
-import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { getCsrfToken } from "next-auth/react";
 import { SiweMessage } from "siwe";
-import { IncomingMessage } from "http";
 import type { CtxOrReq } from "next-auth/client/_utils";
 
 /**
@@ -55,6 +53,7 @@ export const authOptions: (ctxReq: CtxOrReq) => NextAuthOptions = ({
   providers: [
     CredentialsProvider({
       async authorize(credentials) {
+        /* eslint-disable @typescript-eslint/no-unsafe-argument */
         try {
           const siwe = new SiweMessage(
             JSON.parse(credentials?.message || "{}")

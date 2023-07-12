@@ -27,7 +27,6 @@ export default function useClaimAuction({
   const {
     write: claimAuctionWrite,
     data: claimAuctionData,
-    error: claimAuctionError,
   } = useContractWrite({
     ...claimAuctionConfig,
     onError: () => {

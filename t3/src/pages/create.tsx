@@ -2,7 +2,7 @@ import CreateNFTCollection from "~/components/CreateNFTCollection";
 import CreatePrevisualization from "~/components/CreatePrevisualization";
 import { useState } from "react";
 
-const create = () => {
+const Create = () => {
   const [form, setForm] = useState({} as FormCreate);
 
   return (
@@ -19,4 +19,4 @@ const create = () => {
     </div>
   );
 };
-export default create;
+export default Create;

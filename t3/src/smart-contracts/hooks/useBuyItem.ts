@@ -27,7 +27,6 @@ export default function useBuyItem({
   const {
     write: buyItemWrite,
     data: buyItemData,
-    error: buyItemError,
   } = useContractWrite({
     ...buyItemConfig,
     onError: () => {

@@ -9,17 +9,23 @@ export default async function handler(
     return res.status(400).json({message: "unauthorized"});
   }
 
-  const { tokenId, buyer, amount, startingTime, endTime } = req.body;
+  type Body = {
+    tokenId: number,
+    buyer: string,
+    amount: number,
+  }
+
+  const { tokenId, buyer, amount } = req.body as Body;
 
   try {
-    await checkOfferExists(tokenId, buyer, amount, startingTime, endTime);
+    await checkOfferExists(tokenId, buyer, amount);
     return res.status(200).json({message: "ok"})
   } catch (error) {
     return res.status(500).json({message: JSON.stringify(error)});
   }
 }
 
-const checkOfferExists = async (tokenId: number, buyer: string, amount: number, startingTime: number, endTime: number) => {
+const checkOfferExists = async (tokenId: number, buyer: string, amount: number) => {
   const row = await prisma.offer.findUnique({
     where: {
       tokenId_buyer: {
