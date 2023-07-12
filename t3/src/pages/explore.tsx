@@ -2,8 +2,9 @@ import { useState } from "react";
 import NFTcard from "../components/ui/NFTcard";
 import { GetServerSideProps } from "next";
 import { prisma } from "~/server/db";
+import { Nft } from "@prisma/client";
 
-const explore = ({ items }: { items: ExploreItem[] }) => {
+const Explore = ({ items }: { items: ExploreItem[] }) => {
   // Simular datos recibidos de la API
   const [categoriesSelected, setCategoriesSelected] = useState<selectable[]>([
     { name: "Photography", selected: true },
@@ -139,12 +140,11 @@ const explore = ({ items }: { items: ExploreItem[] }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
-
   const nfts = await prisma.nft.findMany({});
-  const items = nfts.filter((nft: any) => nft.tokenId >= 10); // test version - delete the nfts that have incorrect IPFS token Uri
+  const items = nfts.filter((nft: Nft) => nft.tokenId >= 10); // test version - delete the nfts that have incorrect IPFS token Uri
 
   return {
     props: { items },
   };
 };
-export default explore;
+export default Explore;

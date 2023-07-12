@@ -25,12 +25,16 @@ const NFTcard = ({ item }: { item: ExploreItem }) => {
   useEffect(() => {
     const getIPFSMetadata = async () => {
       // console.log(item.tokenId)
-      setTokenId(item.tokenId as SetStateAction<number | undefined>);
+      setTokenId(item.tokenId);
 
       try {
         const _tokenUri = item.tokenUri;
-        const _formattedTokenUri = await formatTokenUri(_tokenUri);
-        const metadataIPFS = await axios.get(_formattedTokenUri);
+        const _formattedTokenUri = formatTokenUri(_tokenUri);
+        const metadataIPFS = await axios.get<{
+          image: string;
+          name: string;
+          description: string;
+        }>(_formattedTokenUri);
         console.log(metadataIPFS);
 
         // Example url to test
@@ -45,11 +49,12 @@ const NFTcard = ({ item }: { item: ExploreItem }) => {
         console.log("Invalid IPFS metadata");
       }
     };
-    getIPFSMetadata();
+    getIPFSMetadata()
+      .then(() => console.log("meow"))
+      .catch(() => console.log("err"));
   }, []);
-  // console.log("tokenUri", typeof tokenUri);
 
-  async function formatTokenUri(_tokenUri: string) {
+  function formatTokenUri(_tokenUri: string) {
     const formattedTokenUri = `https://ipfs.io/ipfs/${_tokenUri?.substring(
       7,
       200
@@ -57,8 +62,7 @@ const NFTcard = ({ item }: { item: ExploreItem }) => {
     return formattedTokenUri;
   }
 
-  //@ts-ignore
-  const formattedTokenUri = `https://ipfs.io/ipfs/${tokenUri?.substring(
+  const formattedTokenUri = `https://ipfs.io/ipfs/${tokenUri!.substring(
     7,
     200
   )}`;
@@ -85,7 +89,7 @@ const NFTcard = ({ item }: { item: ExploreItem }) => {
         </div>
         <button className="rounded-full bg-primary  py-2 text-base-100 hover:bg-base-100 hover:text-primary">
           <Link
-            href={`/product/${tokenId}`}
+            href={`/product/${tokenId ?? ""}`}
             className="duration-700 hover:text-slate-400"
           >
             Details
