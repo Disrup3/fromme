@@ -38,8 +38,9 @@ export default async function useListItem(
         amountInWei,
         _durationInSeconds
       );
-
-      await tx.wait(); // Wait for the transaction to be mined
+      // Wait for the transaction to be mined
+      // eslint-disable-next-line  @typescript-eslint/no-unsafe-call
+      await tx.wait(); // eslint-disable-line @typescript-eslint/no-unsafe-member-access
       console.log("Transaction mined!");
     }
 
