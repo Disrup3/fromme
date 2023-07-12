@@ -53,6 +53,7 @@ export const authOptions: (ctxReq: CtxOrReq) => NextAuthOptions = ({
   providers: [
     CredentialsProvider({
       async authorize(credentials) {
+        /* eslint-disable @typescript-eslint/no-unsafe-argument */
         try {
           const siwe = new SiweMessage(
             JSON.parse(credentials?.message || "{}")
