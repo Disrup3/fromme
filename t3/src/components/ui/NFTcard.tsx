@@ -49,9 +49,8 @@ const NFTcard = ({ item }: { item: ExploreItem }) => {
     200
   )}`;
   const formattedTokenName = String(tokenName);
-  const formattedTokenDescription = String(tokenDescription);
   return (
-    <div className="group flex h-fit flex-col items-center gap-2 rounded-xl shadow-md shadow-primary">
+    <div className="group flex h-fit flex-col items-center gap-2 rounded-xl shadow-md">
       {/* DIV PARA EL INFO EN HOVER */}
       <div className="absolute z-10 hidden w-[250px] flex-col gap-16 p-6 group-hover:flex">
         <div className="flex w-full items-center justify-between">
