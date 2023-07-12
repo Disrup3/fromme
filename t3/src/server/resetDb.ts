@@ -3,10 +3,15 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient()
 
 async function deleteAllNfts() {
-    const deletedUsers = await prisma.nft.deleteMany();
+    try {
+        const deletedUsers = await prisma.nft.deleteMany();
 
-    console.log('Deleted nfts:', deletedUsers);
+        console.log('Deleted nfts:', deletedUsers);
+    } catch (error) {
+        console.log("error", error)
+    }
+
 }
   
 // Usage
-deleteAllNfts();
+deleteAllNfts().catch((err) => console.log(err));
