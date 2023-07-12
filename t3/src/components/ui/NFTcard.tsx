@@ -1,10 +1,9 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AiFillHeart } from "react-icons/ai";
-import { useState, FC, useEffect } from "react";
-import { getInitials } from "~/utils/ui";
+import { useState, useEffect, SetStateAction } from "react";
 import Image from "next/image";
 import axios from "axios";
 import Link from "next/link";
+import shortenAddress from "../../utils/shortenAddress";
 
 // interface Props {
 //     item: ExploreItem;
@@ -17,49 +16,52 @@ import Link from "next/link";
 //  return metadataIPFS;
 //};
 
-const NFTcard = ({ item }: any) => {
-  const [tokenId, setTokenId] = useState();
-  const [tokenUri, setTokenUri] = useState();
-  const [tokenName, setTokenName] = useState();
-  const [tokenDescription, setTokenDescription] = useState();
+const NFTcard = ({ item }: { item: ExploreItem }) => {
+  const [tokenId, setTokenId] = useState<number>();
+  const [tokenUri, setTokenUri] = useState<string>();
+  const [tokenName, setTokenName] = useState<string>();
+  const [tokenDescription, setTokenDescription] = useState<string>();
 
   useEffect(() => {
     const getIPFSMetadata = async () => {
+      // console.log(item.tokenId)
+      setTokenId(item.tokenId);
 
-    // console.log(item.tokenId) 
-    setTokenId(item.tokenId) 
+      try {
+        const _tokenUri = item.tokenUri;
+        const _formattedTokenUri = await formatTokenUri(_tokenUri);
+        const metadataIPFS = await axios.get(_formattedTokenUri);
+        console.log(metadataIPFS);
 
-    try {
+        // Example url to test
+        // const metadataIPFS = await axios.get(
+        //   "https://ipfs.io/ipfs/bafyreif6v655hmxg4f6di63ehaco52fit6lijskem3lvarkgdvr77kao7y/metadata.json"
+        // );
 
-      const _tokenUri = await item.tokenUri;
-      const _formattedTokenUri = await formatTokenUri(_tokenUri);
-      const metadataIPFS = await axios.get(_formattedTokenUri);
-      console.log(metadataIPFS) 
-
-      // Example url to test
-      // const metadataIPFS = await axios.get(
-      //   "https://ipfs.io/ipfs/bafyreif6v655hmxg4f6di63ehaco52fit6lijskem3lvarkgdvr77kao7y/metadata.json"
-      // );
-
-      setTokenUri(metadataIPFS.data.image);
-      setTokenName(metadataIPFS.data.name);
-      setTokenDescription(metadataIPFS.data.description);
-    } catch {
-      console.log('Invalid IPFS metadata')
-    }
-
+        setTokenUri(metadataIPFS.data.image);
+        setTokenName(metadataIPFS.data.name);
+        setTokenDescription(metadataIPFS.data.description);
+      } catch {
+        console.log("Invalid IPFS metadata");
+      }
     };
     getIPFSMetadata();
   }, []);
   // console.log("tokenUri", typeof tokenUri);
 
-   async function formatTokenUri(_tokenUri: string) {
-      const formattedTokenUri = `https://ipfs.io/ipfs/${_tokenUri?.substring(7,200)}`;
-      return formattedTokenUri
+  async function formatTokenUri(_tokenUri: string) {
+    const formattedTokenUri = `https://ipfs.io/ipfs/${_tokenUri?.substring(
+      7,
+      200
+    )}`;
+    return formattedTokenUri;
   }
 
   //@ts-ignore
-  const formattedTokenUri = `https://ipfs.io/ipfs/${tokenUri?.substring(7,200)}`;
+  const formattedTokenUri = `https://ipfs.io/ipfs/${tokenUri?.substring(
+    7,
+    200
+  )}`;
   // console.log("uri", formattedTokenUri);
 
   const formattedTokenName = String(tokenName);
@@ -83,9 +85,9 @@ const NFTcard = ({ item }: any) => {
         </div>
         <button className="rounded-full bg-primary  py-2 text-base-100 hover:bg-base-100 hover:text-primary">
           <Link
-              href={`/product/${tokenId}`}
-              className="duration-700 hover:text-slate-400"
-            >
+            href={`/product/${tokenId}`}
+            className="duration-700 hover:text-slate-400"
+          >
             Details
           </Link>
         </button>
@@ -110,7 +112,7 @@ const NFTcard = ({ item }: any) => {
             className="rounded-full"
           />
           {/*Reponer getInitials*/}
-          <p className="font-semibold">{item.creator}</p>
+          <p className="font-semibold">{shortenAddress(item.creator)}</p>
         </div>
         <p>{item.stock} in stock</p>
       </div>

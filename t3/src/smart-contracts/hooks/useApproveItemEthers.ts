@@ -1,11 +1,10 @@
 
 import { addresses, NFTFactory_abi } from "../constants";
 import { ethers } from 'ethers';
-import dotenv from 'dotenv';
 
 declare global {
   interface Window {
-    ethereum: any;
+    ethereum: ethers.providers.ExternalProvider & { enable: () => Promise<void> };
   }
 }
 
@@ -20,7 +19,7 @@ export default async function useApproveItem(tokenId: number) {
     const signer = provider.getSigner();
     console.log("Account:", await signer.getAddress());
 
-    const contract = new ethers.Contract(addresses.NFTFactory, NFTFactory_abi, signer);
+    const contract = new ethers.Contract(addresses.NFTFactory, NFTFactory_abi, signer) as ethers.Contract & { approve: (addresses: string, tokenId: number) => Promise<string> };
 
     async function callContractFunction() {
       try {
@@ -33,7 +32,7 @@ export default async function useApproveItem(tokenId: number) {
         await window.ethereum.enable();
     
         // Perform the contract function call
-        const result = await contract.approve(addresses.FrommeMarketplace, tokenId)
+        const result = await contract.approve(addresses.FrommeMarketplace, tokenId);
     
         // Process the result
         console.log('Contract function called:', result);
@@ -41,32 +40,7 @@ export default async function useApproveItem(tokenId: number) {
         console.error('Error calling contract function:', error);
       }
     }
-
-    callContractFunction()
-    
-    //// OLD VERSION
-    // Create a wallet instance using a private key
-    // const privateKey = process.env.NEXT_PUBLIC_PRIVATE_KEY;
-
-    // let wallet: ethers.Wallet | undefined;
-    // if (privateKey) {
-    //   wallet = new ethers.Wallet(privateKey, provider);
-    // }
-    // const connectedContract = wallet ? contract.connect(wallet) : contract;
-
-    // async function sendTransactionToContract() {
-    //   if (!wallet) {
-    //     console.error('Private key is missing');
-    //     return;
-    //   }
-
-    //   const tx = await connectedContract.approve(addresses.FrommeMarketplace, tokenId);
-    //   await tx.wait(); // Wait for the transaction to be mined
-    //   console.log('Transaction mined! Nft approved');
-    // }
-
-    // sendTransactionToContract()
-
+    await callContractFunction();
   } catch (error) {
     console.error('Error reading getApproved of token:', error);
     throw error;

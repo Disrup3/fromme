@@ -2,7 +2,6 @@ import {
   // erc20ABI,
   // useContractRead,
   useContractWrite,
-  usePrepareContractWrite,
   useWaitForTransaction,
 } from "wagmi";
 import { addresses, NFTFactory_abi } from "../constants";
@@ -30,7 +29,6 @@ export default function useNftfactoryContract({
   const {
     write: createNFTWrite,
     data: createNFTdata,
-    error: createNFTerror,
   } = useContractWrite({
     abi: NFTFactory_abi,
     address: addresses.NFTFactory,

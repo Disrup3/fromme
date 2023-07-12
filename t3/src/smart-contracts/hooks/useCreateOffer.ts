@@ -30,7 +30,6 @@ export default function useCreateOffer({
   const {
     write: createOfferWrite,
     data: createOfferData,
-    error: createOfferError,
   } = useContractWrite({
     ...createOfferConfig,
     onError: () => {
