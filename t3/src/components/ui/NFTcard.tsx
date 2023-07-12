@@ -1,20 +1,9 @@
 import { AiFillHeart } from "react-icons/ai";
-import { useState, useEffect, SetStateAction } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import axios from "axios";
 import Link from "next/link";
 import shortenAddress from "../../utils/shortenAddress";
-
-// interface Props {
-//     item: ExploreItem;
-// }
-//const getIPFSMetadata = async () => {
-//  const metadataIPFS = await axios.get(
-//    "https://ipfs.io/ipfs/bafyreif6v655hmxg4f6di63ehaco52fit6lijskem3lvarkgdvr77kao7y/metadata.json"
-//  );
-//  console.log("metadataIPFS", metadataIPFS.data);
-//  return metadataIPFS;
-//};
 
 const NFTcard = ({ item }: { item: ExploreItem }) => {
   const [tokenId, setTokenId] = useState<number>();
@@ -24,7 +13,6 @@ const NFTcard = ({ item }: { item: ExploreItem }) => {
 
   useEffect(() => {
     const getIPFSMetadata = async () => {
-      // console.log(item.tokenId)
       setTokenId(item.tokenId);
 
       try {
@@ -35,12 +23,6 @@ const NFTcard = ({ item }: { item: ExploreItem }) => {
           name: string;
           description: string;
         }>(_formattedTokenUri);
-        console.log(metadataIPFS);
-
-        // Example url to test
-        // const metadataIPFS = await axios.get(
-        //   "https://ipfs.io/ipfs/bafyreif6v655hmxg4f6di63ehaco52fit6lijskem3lvarkgdvr77kao7y/metadata.json"
-        // );
 
         setTokenUri(metadataIPFS.data.image);
         setTokenName(metadataIPFS.data.name);
@@ -66,14 +48,8 @@ const NFTcard = ({ item }: { item: ExploreItem }) => {
     7,
     200
   )}`;
-  // console.log("uri", formattedTokenUri);
-
   const formattedTokenName = String(tokenName);
-  // console.log("formattedTokenName", formattedTokenName);
-
   const formattedTokenDescription = String(tokenDescription);
-  // console.log("formattedTokenDescription", formattedTokenDescription);
-
   return (
     <div className="group flex h-fit flex-col items-center gap-2 rounded-xl shadow-md shadow-primary">
       {/* DIV PARA EL INFO EN HOVER */}
