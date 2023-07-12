@@ -9,7 +9,12 @@ export default async function handler(
     return res.status(400).json({message: "unauthorized"});
   }
 
-  const { tokenId, seller } = req.body;
+  type Body = {
+    tokenId: number,
+    seller: string,
+  }
+
+  const { tokenId, seller } = req.body as Body;
 
   try {
     const foundRow: boolean = await checkOfferExists(tokenId, seller);
