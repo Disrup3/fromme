@@ -25,7 +25,7 @@ const NFTcard = ({ item }: { item: ExploreItem }) => {
   useEffect(() => {
     const getIPFSMetadata = async () => {
       // console.log(item.tokenId)
-      setTokenId(item.tokenId as SetStateAction<number | undefined>);
+      setTokenId(item.tokenId);
 
       try {
         const _tokenUri = item.tokenUri;
