@@ -11,6 +11,11 @@ export default async function handler(
 
   const { tokenId, buyer, amount, startingTime, endTime } = req.body;
 
+  console.log('+++++++++++++++++++')
+  console.log(req.body)
+  console.log(tokenId)
+  console.log('+++++++++++++++++++')
+
   try {
     await checkOfferExists(tokenId, buyer, amount, startingTime, endTime);
     return res.status(200).json({message: "ok"})
@@ -20,6 +25,7 @@ export default async function handler(
 }
 
 const checkOfferExists = async (tokenId: number, buyer: string, amount: number, startingTime: number, endTime: number) => {
+
   const row = await prisma.offer.findUnique({
     where: {
       tokenId_buyer: {
@@ -27,6 +33,7 @@ const checkOfferExists = async (tokenId: number, buyer: string, amount: number, 
       }
     }
   });
+
   if(row) {
     await prisma.offer.update({
       where: {

@@ -7,7 +7,7 @@ await import("./src/env.mjs");
 /** @type {import("next").NextConfig} */
 const config = {
   images: {
-    domains: ["ipfs.io"],
+    domains: ["ipfs.io", "encrypted-tbn0.gstatic.com"],
   },
   reactStrictMode: true,
   webpack: (config) => {

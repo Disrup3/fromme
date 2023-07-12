@@ -12,14 +12,14 @@ export default async function handler(
   const { tokenId, seller, startingAmount, startingTime, endTime } = req.body;
 
   try {
-    await checkOfferExists(tokenId, seller, startingAmount, startingTime, endTime);
+    await checkAuctionExists(tokenId, seller, startingAmount, startingTime, endTime);
     return res.status(200).json({message: "ok"});
   } catch (error) {
     return res.status(500).json({message: JSON.stringify(error)});
   }
 }
 
-const checkOfferExists = async (tokenId: number, seller: string, startingAmount: number, startingTime: number, endTime: number) => {
+const checkAuctionExists = async (tokenId: number, seller: string, startingAmount: number, startingTime: number, endTime: number) => {
   const row = await prisma.auction.findUnique({
     where: {
       tokenId_startingTime: {

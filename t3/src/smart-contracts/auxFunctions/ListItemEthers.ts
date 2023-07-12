@@ -1,12 +1,8 @@
 
 import { addresses, FrommeMarketplace_abi } from "../constants";
 import { ethers } from 'ethers';
-import dotenv from 'dotenv';
 
-// Load environment variables from .env file
-// dotenv.config({ path: '..\..\..\.env' });
-
-export default async function useListItem(_tokenId: number, _amount: number, _durationInSeconds: number) {
+export default async function ListItem(_tokenId: number, _amount: number, _durationInSeconds: number) {
   try {
 
     const provider = new ethers.providers.Web3Provider(window.ethereum, "any");

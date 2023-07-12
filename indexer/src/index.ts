@@ -24,10 +24,10 @@ const connect = async () => {
 
   const trackContractCallback = async () => {
     const lastBlocks = await prisma.tracker_State.findMany(); 
-    await processFactoryTrackerEvents(lastBlocks[0].lastBlockProcessed, prisma);
-    await processNftMarketplaceEvents(lastBlocks[0].lastBlockProcessed, prisma);
+    // await processFactoryTrackerEvents(lastBlocks[0].lastBlockProcessed, prisma);
+    // await processNftMarketplaceEvents(lastBlocks[0].lastBlockProcessed, prisma);
     await processDeadEvents();
-    setTimeout(() => trackContractCallback(), 2000); // Recursividad de trackeo
+    setTimeout(() => trackContractCallback(), 20000); // Recursividad de trackeo
   };
   await trackContractCallback();
 };
@@ -35,18 +35,22 @@ const connect = async () => {
 const processDeadEvents = async () => {
   // checkear si hay eventos muertos
   const deadEvents = await prisma.dead_events_queue.findMany();
+  // console.log('deadEvents', deadEvents)
 
   if(!deadEvents.length) return console.log("No hay que recuperar");
   // de ser asi, llamar a callApi con esos datos
-  try {
+  // try {
     deadEvents.forEach(async (event: Dead_events_queue) => {
       console.log(event.eventName)
+      // console.log(event)
       const success = await callApi(event.eventName, JSON.parse(event.data), true);
-      if(success) await prisma.dead_events_queue.delete({where: {id: event.id}})
+      console.log(success)
+      return
+      // if(success) await prisma.dead_events_queue.delete({where: {id: event.id}})
     });
-  } catch (error) {
-    console.log(error);
-  }
+  // } catch (error) {
+    // console.log(error);
+  // }
 };
 
 setTimeout(connect, 2000); // Para que el turbo repo no pete

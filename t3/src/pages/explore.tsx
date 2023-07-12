@@ -6,49 +6,6 @@ import { GetServerSideProps } from "next";
 import { prisma } from "~/server/db";
 
 const explore = ({ items }: { items: any }) => {
-  // Simular datos recibidos de la API
-  //const items = [
-  //  {
-  //    name: "Los 90",
-  //    description: "Iconos de los años 90",
-  //    image:
-  //      "https://ipfs.io/ipfs/bafybeihqg2q2lhokindipetm5c2yiknwaes423dyyi6yssa3rva5mdggfu/FUA_pLhWQAE2GyI-1024x1229.jpeg",
-  //    price: 1,
-  //    creator: "Bruce Willis",
-  //    stock: 10,
-  //    favorites: 230,
-  //  },
-  //  {
-  //    name: "Pájaro azul",
-  //    description: "Iconos de los años 90",
-  //    image:
-  //      "https://ipfs.io/ipfs/bafybeibl42qqf6edhl67hfpwxax4sc6sehcs2oqhajsaqxjyfjgtlcijdi/photo_2021-10-04_16-09-14.jpg",
-  //    price: 233,
-  //    creator: "Fernando Alonso Díaz",
-  //    stock: 3,
-  //    favorites: 300,
-  //  },
-  //  {
-  //    name: "Película Netflix",
-  //    description: "desc",
-  //    image:
-  //      "https://ipfs.io/ipfs/bafybeigucrxr7k5yv7bu53pohp66m55if7qvksraqwrdhx2p7pyqdv5pu4/fghertgerryhjrtyj.jpg",
-  //    price: 32,
-  //    creator: "Raphael",
-  //    stock: 2,
-  //    favorites: 310,
-  //  },
-  //  {
-  //    name: "Mr Crypto 5582",
-  //    description: "Un Mr Crypto",
-  //    image:
-  //      "https://ipfs.io/ipfs/bafybeieeuo7onug6boss3hs7ryt5twcyamuktob5emwhjfeipcamzeknoe/mrCrypto5582.jpg",
-  //    price: 5,
-  //    creator: "Pep Guardiola",
-  //    stock: 2,
-  //    favorites: 310,
-  //  },
-  //];
 
   // Simular datos recibidos de la API
   const [categoriesSelected, setCategoriesSelected] = useState<selectable[]>([
