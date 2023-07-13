@@ -8,7 +8,7 @@ export default async function ReadOwnerOf(tokenId: number) {
     const providerUrl = process.env.NEXT_PUBLIC_URL_MUMBAI; // Replace with the actual JSON-RPC URL
     const provider = new ethers.providers.JsonRpcProvider(providerUrl);
 
-    const contract = new ethers.Contract(addresses.NFTFactory, NFTFactory_abi, provider);
+    const contract = new ethers.Contract(addresses.NFTFactory, NFTFactory_abi, provider) as ethers.Contract & {ownerOf: (id: number) => Promise<string>};
 
     // Call the `ownerOf` function to get the owner of a specific token
     const owner = await contract.ownerOf(tokenId);

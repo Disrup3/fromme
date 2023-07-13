@@ -8,7 +8,11 @@ export default async function IsApproved(tokenId: number) {
     const providerUrl = process.env.NEXT_PUBLIC_URL_MUMBAI; // Replace with the actual JSON-RPC URL
     const provider = new ethers.providers.JsonRpcProvider(providerUrl);
 
-    const contract = new ethers.Contract(addresses.NFTFactory, NFTFactory_abi, provider);
+    const contract = new ethers.Contract(
+      addresses.NFTFactory,
+      NFTFactory_abi,
+      provider
+    ) as ethers.Contract & { getApproved: (tokenId: number) => Promise<void> };
 
     const addressApproved = await contract.getApproved(tokenId);
 

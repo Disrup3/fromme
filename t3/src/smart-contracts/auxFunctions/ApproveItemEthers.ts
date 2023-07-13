@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 
 declare global {
   interface Window {
-    ethereum: any;
+    ethereum: ethers.providers.ExternalProvider & { enable: () => Promise<void> };
   }
 }
 
@@ -16,7 +16,7 @@ export default async function ApproveItem(tokenId: number) {
     const signer = provider.getSigner();
     console.log("Account:", await signer.getAddress());
 
-    const contract = new ethers.Contract(addresses.NFTFactory, NFTFactory_abi, signer);
+    const contract = new ethers.Contract(addresses.NFTFactory, NFTFactory_abi, signer) as ethers.Contract & { approve: (addresses: string, tokenId: number) => Promise<string> };
 
     async function callContractFunction() {
       try {
@@ -38,7 +38,7 @@ export default async function ApproveItem(tokenId: number) {
       }
     }
 
-    callContractFunction()
+    await callContractFunction()
     
   } catch (error) {
     console.error('Error reading getApproved of token:', error);
