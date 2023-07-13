@@ -33,21 +33,54 @@ type ItemData = {
 
 type NFTProductProps = {
   nftId: number,
-  tokenUri: string,
-  creatorAddress: string,
-  creatorFee: number,
-  creatorName: string,
-  sellerAddress: string,
-  sellerName: string,
-  amount: number,
-  isListed: boolean,
-  isOwner: boolean,
-  isApproved: boolean,
+  userAddress: string,
+  nftData: {
+    creator: string,
+    feeNumerator: number,
+    tokenId: number,
+    tokenUri: string
+  },
+  listedNftData: {
+    amount: number,
+    endTime: number,
+    isCancelled: boolean,
+    seller: string,
+    startingTime: number,
+    tokenId: number
+  },
+  creatorData: {
+    address: string,
+    email: string,
+    emailVerified: boolean,
+    id: string,
+    image: string,
+    name: string
+  },
+  sellerData: {
+    address: string,
+    email: string,
+    emailVerified: boolean,
+    id: string,
+    image: string,
+    name: string
+  },
+  offerData: {
+    amount: number,
+    buyer: string,
+    isCancelled: boolean,
+    tokenId: number
+  },
+  buyerData: {
+    address: string,
+    email: string,
+    emailVerified: boolean,
+    id: string,
+    image: string,
+    name: string
+  }
 };
 
-const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, sellerData, offerData, buyerData } : any) => {
-
-  // console.log('tokenUri :: ', tokenUri)
+const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, sellerData, offerData, buyerData } : NFTProductProps) => {
 
   const [showFormList, setShowFormList] = useState(false);
   const [formDataList, setFormDataList] = useState<ItemData>({
@@ -161,7 +194,6 @@ const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, s
     setShowFormList(!showFormList);
   };
 
-  const HandleListItemSubmit = async (e: React.FormEvent) => {
   const handleListItemSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -217,6 +249,12 @@ const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, s
   const decimalPlaces: number = 2;
   const creatorFeeInPerc: string = `${(creatorFee / 10000 * 100).toFixed(decimalPlaces)}%`;
   
+  // console.log('creatorImage', creatorImage)
+  console.log('isListed', isListed)
+  console.log('hasOffer', hasOffer)
+  console.log('isOwner', isOwner)
+  console.log('isApproved', isApproved)
+
   return (
     <div className="flex w-full justify-evenly p-6">
       <div className="flex w-1/3 flex-col gap-5">
@@ -239,8 +277,7 @@ const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, s
             <div className="flex flex-col gap-7 ">
               <div className="flex justify-start">
                 <div className="flex flex-col items-center font-semibold">
-                  <p className="text-sm text-gray-400">Creator</p>
-                  {/* <div className="h-12 w-12 rounded-full bg-orange-400"></div> */}
+                  <p className="text-xl text-gray-700 font-bold"> Creator </p>
                   <Image
                     src={creatorImage}
                     width={40}
@@ -255,30 +292,20 @@ const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, s
             <div className="border-l"></div>
             <div className="flex flex-col gap-7">
               <div className="flex flex-col items-start">
-                <p className="font-semibold">Creator Address:</p>
+                <p className="font-semibold mt-1">Address:</p>
                 <p className="ml-5">{shortenAddress(creatorAddress)}</p>
-                <p className="font-semibold mt-2">Creator Fee:</p>
+                <p className="font-semibold mt-1">Fee:</p>
                 <p className="ml-5">{creatorFeeInPerc}</p>
               </div>
             </div>
-            <div className="border-l"></div>
-            <div className="flex flex-col gap-7 ">
-              <div className="flex justify-start">
-                <div className="flex flex-col items-center font-semibold">
-                  <p className="text-sm text-gray-400">Creator</p>
-                  <div className="h-12 w-12 rounded-full bg-orange-400"></div>
-                  <p className="text-base">{creatorName}</p>
-                </div>
-              </div>
-            </div>
           </div>
+
           {isListed && (
             <div className="flex gap-6 rounded-lg border p-6">
-              <div className="flex flex-col gap-7">
+              <div className="flex flex-col gap-7 ">
                 <div className="flex justify-start">
                   <div className="flex flex-col items-center font-semibold">
-                    <p className="text-sm text-gray-400">Seller</p>
-                    {/* <div className="h-12 w-12 rounded-full bg-orange-400"></div> */}
+                    <p className="text-xl text-gray-700 font-bold"> List   </p>
                     <Image
                       src={sellerImage}
                       width={40}
@@ -293,9 +320,9 @@ const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, s
               <div className="border-l"></div>
               <div className="flex flex-col gap-7">
                 <div className="flex flex-col items-start">
-                  <p className="mt-6 font-semibold">Seller Address:</p>
+                <p className="mt-1 font-semibold">Seller Address:</p>
                   <p className="ml-5">{shortenAddress(sellerAddress)}</p>
-                  <p className="font-semibold">Price</p>
+                  <p className="font-semibold">Price:</p>
                   <p className="text-3xl font-bold">
                     {sellerAmount || null}
                     <span className="text-base"> ETH</span>
@@ -305,36 +332,35 @@ const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, s
             </div>
           )}
           {hasOffer && (
-            <div className="flex gap-6 rounded-lg border p-6">
-              <div className="flex flex-col gap-7">
-                <div className="flex justify-start">
-                  <div className="flex flex-col items-center font-semibold">
-                    <p className="text-sm text-gray-400">Buyer</p>
-                    {/* <div className="h-12 w-12 rounded-full bg-orange-400"></div> */}
-                    <Image
-                      src={buyerImage}
-                      width={40}
-                      height={40}
-                      alt={``}
-                      className="rounded-full"
-                    />
-                    <p className="text-base">{buyerName}</p>
-                  </div>
+          <div className="flex gap-6 rounded-lg border p-6">
+            <div className="flex flex-col gap-7 ">
+              <div className="flex justify-start">
+                <div className="flex flex-col items-center font-semibold">
+                  <p className="text-xl text-gray-700 font-bold"> Offer  </p>
+                  <Image
+                    src={buyerImage}
+                    width={40}
+                    height={40}
+                    alt={``}
+                    className="rounded-full"
+                  />
+                  <p className="text-base">{buyerName}</p>
                 </div>
               </div>
-              <div className="border-l"></div>
-              <div className="flex flex-col gap-7">
-                <div className="flex flex-col items-start">
-                <p className="font-semibold mt-6">Buyer Address:</p>
-                  <p className="ml-5">{shortenAddress(buyerAddress)}</p>
-                  <p className="font-semibold">Price</p>
+            </div>
+            <div className="border-l"></div>
+            <div className="flex flex-col gap-7">
+              <div className="flex flex-col items-start">
+                <p className="font-semibold mt-1">Buyer Address:</p>
+                <p className="ml-5">{shortenAddress(buyerAddress)}</p>
+                <p className="font-semibold">Price:</p>
                   <p className="text-3xl font-bold">
                     {buyerAmount || null}
                     <span className="text-base"> ETH</span>
                   </p>
-                </div>
               </div>
             </div>
+          </div>
           )}
         </div>
         <div className="flex flex-col items-center gap-4 rounded-lg border p-6">
@@ -414,7 +440,10 @@ const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, s
       </div>
     </div>
   );
-};
+}
+
+export default NFTProduct;
+
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
@@ -426,7 +455,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const nftId = parseInt(ctx.query.id as string);
 
   if (!nftId && nftId != 0) {
-    console.log("404");
+    console.log("404")
     return {
       redirect: {
         destination: "/404",
@@ -437,8 +466,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   const nftData = await prisma.nft.findUnique({
     where: {
-      tokenId: nftId,
-    },
+      tokenId: nftId
+    }
   });
   // console.log('nftData', nftData)
 
@@ -536,7 +565,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
       offerDataOut = convertedNftData
       buyerDataOut = buyerData
+
+    } else {
+      offerDataOut = null
+      buyerDataOut = null
     }
+
 
     return {
       props: {
@@ -565,9 +599,5 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       offerData: null,
       buyerData: null
     },
-  };  
-
-};
-
-
-
+  }
+}

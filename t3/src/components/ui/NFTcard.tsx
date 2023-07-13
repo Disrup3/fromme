@@ -9,7 +9,7 @@ const NFTcard = ({ item }: { item: ExploreItem }) => {
   const [tokenId, setTokenId] = useState<number>();
   const [tokenUri, setTokenUri] = useState<string>();
   const [tokenName, setTokenName] = useState<string>();
-  const [tokenDescription, setTokenDescription] = useState<string>();
+  // const [tokenDescription, setTokenDescription] = useState<string>();
 
   useEffect(() => {
     const getIPFSMetadata = async () => {
@@ -24,9 +24,11 @@ const NFTcard = ({ item }: { item: ExploreItem }) => {
           description: string;
         }>(_formattedTokenUri);
 
-        setTokenUri(metadataIPFS.data.image);
+        console.log('metadataIPFS :: ', metadataIPFS)
+
+        setTokenUri(formatTokenUri(metadataIPFS.data.image));
         setTokenName(metadataIPFS.data.name);
-        setTokenDescription(metadataIPFS.data.description);
+        // setTokenDescription(metadataIPFS.data.description);
       } catch {
         console.log("Invalid IPFS metadata");
       }
@@ -37,19 +39,10 @@ const NFTcard = ({ item }: { item: ExploreItem }) => {
   }, []);
 
   function formatTokenUri(_tokenUri: string) {
-    const formattedTokenUri = `https://ipfs.io/ipfs/${_tokenUri?.substring(
-      7,
-      200
-    )}`;
+    const formattedTokenUri = `https://ipfs.io/ipfs/${_tokenUri?.substring(7,200)}`;
     return formattedTokenUri;
   }
 
-  const formattedTokenUri = `https://ipfs.io/ipfs/${tokenUri!.substring(
-    7,
-    200
-  )}`;
-  const formattedTokenName = String(tokenName);
-  const formattedTokenDescription = String(tokenDescription);
   return (
     <div className="group flex h-fit flex-col items-center gap-2 rounded-xl shadow-md shadow-primary">
       {/* DIV PARA EL INFO EN HOVER */}
@@ -74,15 +67,15 @@ const NFTcard = ({ item }: { item: ExploreItem }) => {
       </div>
       <div className="flex h-72 justify-center overflow-hidden rounded-lg">
         <Image
-          src={formattedTokenUri}
-          alt={formattedTokenName}
+          src={tokenUri}
+          alt={tokenName}
           width={250}
           height={250}
           className="object-cover duration-700 group-hover:scale-110"
         />
       </div>
       <div className="flex w-full flex-col items-start gap-3 p-3">
-        <h2 className="text-xl font-semibold">{formattedTokenName}</h2>
+        <h2 className="text-xl font-semibold">{tokenName}</h2>
         <div className="flex justify-start gap-2">
           <Image
             src="/images/test.jpg"
