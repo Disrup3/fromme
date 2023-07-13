@@ -4,7 +4,7 @@ import { AiOutlineHeart } from "react-icons/ai";
 import { GetServerSideProps } from "next";
 import { prisma } from "~/server/db";
 import { getSession } from "next-auth/react";
-import { ethers } from 'ethers';
+import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 
 import { addresses } from "../../smart-contracts/constants";
@@ -18,17 +18,36 @@ import ApproveItem from "../../smart-contracts/auxFunctions/ApproveItemEthers";
 import ListItem from "../../smart-contracts/auxFunctions/ListItemEthers";
 import CreateOffer from "../../smart-contracts/auxFunctions/CreateOffer";
 import axios from "axios";
+import shortenAddress from "~/utils/shortenAddress";
+
+interface MetadataIPFS {
+  data: {
+    image: string;
+  }
+}
 
 type ItemData = {
   amountList: number;
   durationList: number;
 };
 
+type NFTProductProps = {
+  nftId: number,
+  tokenUri: string,
+  creatorAddress: string,
+  creatorFee: number,
+  creatorName: string,
+  sellerAddress: string,
+  sellerName: string,
+  amount: number,
+  isListed: boolean,
+  isOwner: boolean,
+  isApproved: boolean,
+};
 
 const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, sellerData, offerData, buyerData } : any) => {
 
-  console.log('offerData', offerData)
-  console.log('buyerData', buyerData)
+  // console.log('tokenUri :: ', tokenUri)
 
   const [showFormList, setShowFormList] = useState(false);
   const [formDataList, setFormDataList] = useState<ItemData>({
@@ -141,6 +160,8 @@ const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, s
   const handleListItem = () => {
     setShowFormList(!showFormList);
   };
+
+  const HandleListItemSubmit = async (e: React.FormEvent) => {
   const handleListItemSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -240,6 +261,16 @@ const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, s
                 <p className="ml-5">{creatorFeeInPerc}</p>
               </div>
             </div>
+            <div className="border-l"></div>
+            <div className="flex flex-col gap-7 ">
+              <div className="flex justify-start">
+                <div className="flex flex-col items-center font-semibold">
+                  <p className="text-sm text-gray-400">Creator</p>
+                  <div className="h-12 w-12 rounded-full bg-orange-400"></div>
+                  <p className="text-base">{creatorName}</p>
+                </div>
+              </div>
+            </div>
           </div>
           {isListed && (
             <div className="flex gap-6 rounded-lg border p-6">
@@ -262,7 +293,7 @@ const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, s
               <div className="border-l"></div>
               <div className="flex flex-col gap-7">
                 <div className="flex flex-col items-start">
-                <p className="font-semibold mt-6">Seller Address:</p>
+                  <p className="mt-6 font-semibold">Seller Address:</p>
                   <p className="ml-5">{shortenAddress(sellerAddress)}</p>
                   <p className="font-semibold">Price</p>
                   <p className="text-3xl font-bold">
@@ -313,12 +344,18 @@ const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, s
             </button>
           )}
           {isListed == true && isOwner == true && (
-            <button className="w-full rounded-full bg-red-500 py-2 font-semibold text-base-100" onClick={handleCancelListSubmit}>
+            <button
+              className="w-full rounded-full bg-red-500 py-2 font-semibold text-base-100"
+              onClick={() => handleCancelListSubmit}
+            >
               Cancel Listing
             </button>
           )}
           {isListed == false && isOwner == true && isApproved == false && (
-            <button className="w-full rounded-full bg-gray-500 py-2 font-semibold text-base-100" onClick={handleApproveItem}>
+            <button
+              className="w-full rounded-full bg-gray-500 py-2 font-semibold text-base-100"
+              onClick={() => handleApproveItem}
+            >
               Approve Item
             </button>
           )}
@@ -345,36 +382,15 @@ const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, s
                 value={formDataList.durationList}
                 onChange={handleInputChangeList}
               />
-              <button className="w-full rounded-full bg-gray-500 py-2 font-semibold text-base-100 mt-5" type="submit">Submit</button>
+              <button
+                className="mt-5 w-full rounded-full bg-gray-500 py-2 font-semibold text-base-100"
+                type="submit"
+              >
+                Submit
+              </button>
             </form>
           )}
-          {isOwner == false && (
-            <button className="w-full rounded-full bg-yellow-500 py-2 font-semibold text-base-100" onClick={handleCreateOffer}>
-              {showOfferList ? "Close" : "Make Offer"}
-            </button>
-          )}
-          {showOfferList && (
-            <form onSubmit={handleCreateOfferSubmit}>
-              <input
-                className="mt-2 mr-2 appearance-none bg-white border border-gray-400 rounded py-2 px-4 leading-tight focus:outline-none focus:border-blue-500"
-                type="number"
-                name="amountList"
-                placeholder="amount in ETH"
-                value={formDataOffer.amountList}
-                onChange={handleInputChangeOffer}
-              />
-              <input
-                className="mt-2 appearance-none bg-white border border-gray-400 rounded py-2 px-4 leading-tight focus:outline-none focus:border-blue-500"
-                type="number"
-                name="durationList"
-                placeholder="duration in seconds"
-                value={formDataOffer.durationList}
-                onChange={handleInputChangeOffer}
-              />
-              <button className="w-full rounded-full bg-gray-500 py-2 font-semibold text-base-100 mt-5" type="submit">Submit</button>
-            </form>
-          )}
-          <div className="bg-gray-500 h-px my-4"></div>
+          <div className="my-4 h-px bg-gray-500"></div>
           <p className="font-semibold text-gray-400">
             Transfer History{" "}
             <Link href={"#"} className="text-secondary">
@@ -382,18 +398,6 @@ const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, s
             </Link>
           </p>
         </div>
-
-        {/* <div className="flex flex-col items-center gap-4 rounded-lg border p-6">
-          <button className="w-full rounded-full bg-primary py-2 font-semibold text-base-100">
-            Purchase
-          </button>
-          <p className="font-semibold text-gray-400">
-            Transfer History{" "}
-            <Link href={"#"} className="text-secondary">
-              Click Here
-            </Link>
-          </p>
-        </div> */}
       </div>
       {/* <div className="h-[450px] w-1/3 rounded-lg bg-test bg-cover bg-center"> */}
       <div>
@@ -412,8 +416,6 @@ const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, s
   );
 };
 
-export default NFTProduct;
-
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   const session = await getSession(ctx)
@@ -424,7 +426,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const nftId = parseInt(ctx.query.id as string);
 
   if (!nftId && nftId != 0) {
-    console.log("404")
+    console.log("404");
     return {
       redirect: {
         destination: "/404",
@@ -435,8 +437,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   const nftData = await prisma.nft.findUnique({
     where: {
-      tokenId: nftId
-    }
+      tokenId: nftId,
+    },
   });
   // console.log('nftData', nftData)
 
@@ -563,5 +565,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       offerData: null,
       buyerData: null
     },
-  }
-}
+  };  
+
+};
+
+
+

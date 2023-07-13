@@ -1,23 +1,25 @@
 import { prisma } from "~/server/db";
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(
+export default async function handler( 
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
   if(!(req.method === "POST")) {
     return res.status(400).json({message: "unauthorized"});
   }
-
+  
   type Body = {
     tokenId: number,
+    seller: string,
     buyer: string,
+    amount: number,
   }
-
-  const { tokenId, buyer } = req.body as Body;
+  
+  const { tokenId, seller, buyer, amount } = req.body as Body;
 
   try {
-    const foundRow: boolean = await checkOfferExists(tokenId, buyer);
+    const foundRow: boolean = await checkNftExists(tokenId, seller, buyer, amount );
     return foundRow
     ? res.status(200).json({message: "ok"})
     : res.status(412).json({message: "Nonexisting offer"});
@@ -26,25 +28,25 @@ export default async function handler(
   }
 }
 
-const checkOfferExists = async (tokenId: number, buyer: string): Promise<boolean> => {
-  const row = await prisma.offer.findUnique({
+const checkNftExists = async (tokenId: number, seller: string, buyer:string, amount: number) => {
+  const listedNft = await prisma.listedNft.findFirst({
     where: {
-      tokenId_buyer: {
-        tokenId, buyer,
-      }
+      tokenId:tokenId,
+      amount:amount,
+    },
+    include:{
+      nft:true,
     }
   });
-  if(row) {
-    await prisma.offer.update({
+  if (listedNft){
+    await prisma.listedNft.updateMany({
       where: {
-        tokenId_buyer: {
-          tokenId, buyer,
-        }
+        tokenId:tokenId,
       },
       data: {
         isCancelled: true,
       }
-    });
+    })
   }
-  return (row ? true : false);
+  return (listedNft ? true : false);
 }

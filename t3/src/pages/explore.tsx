@@ -1,12 +1,11 @@
 import { useState } from "react";
 import NFTcard from "../components/ui/NFTcard";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { GetServerSideProps } from "next";
 import { prisma } from "~/server/db";
+import { Nft } from "@prisma/client";
 
-const explore = ({ items }: { items: any }) => {
-
+const Explore = ({ items }: { items: ExploreItem[] }) => {
+ 
   // Simular datos recibidos de la API
   const [categoriesSelected, setCategoriesSelected] = useState<selectable[]>([
     { name: "Photography", selected: true },
@@ -104,14 +103,13 @@ const explore = ({ items }: { items: any }) => {
         {/* <!-- Checkboxes categories --> */}
         <p>Category</p>
         {categoriesSelected.map((category, index) => (
-          <div className="form-control" key={index} onClick={() => {}}>
+          <div className="form-control" key={index}>
             <label className="label cursor-pointer">
               <span className="label-text">{category.name}</span>
               <input
                 type="checkbox"
                 checked={category.selected}
                 className="checkbox-primary checkbox"
-                onChange={() => {}}
               />
             </label>
           </div>
@@ -119,14 +117,13 @@ const explore = ({ items }: { items: any }) => {
         {/* <!-- Checkboxes origin --> */}
         <p>Origin</p>
         {originSelected.map((category, index) => (
-          <div className="form-control" key={index} onClick={() => {}}>
+          <div className="form-control" key={index}>
             <label className="label cursor-pointer">
               <span className="label-text">{category.name}</span>
               <input
                 type="checkbox"
                 checked={category.selected}
                 className="checkbox-primary checkbox"
-                onChange={() => {}}
               />
             </label>
           </div>
@@ -134,7 +131,7 @@ const explore = ({ items }: { items: any }) => {
         <button className="btn-primary btn">Reset filters</button>
       </div>
       <div className="flex flex-wrap justify-center gap-5 p-8">
-        {items?.map((item: ExploreItem, index: any) => {
+        {items?.map((item: ExploreItem, index: number) => {
           // console.log('explore ::::', index, item)
           return <NFTcard key={index} item={item} />;
         })}
@@ -144,28 +141,11 @@ const explore = ({ items }: { items: any }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  // const listedNfts = await prisma.listedNft.findMany({
-  //   include: {
-  //     nft: true,
-  //   },
-  // });
-  // listedNfts.map((listedNft) => {
-  //   listedNft.amount = listedNft.amount?.toString();
-  // });
-  // console.log("listedNfts", listedNfts);
-
   const nfts = await prisma.nft.findMany({});
-  // console.log("nfts", nfts);
-
-  // const items = [nfts, listedNfts]; // old version - no need to repeat the listed
-  // const items = nfts; // good version
-  const items = nfts.filter((nft: any) => nft.tokenId >= 10); // test version - delete the nfts that have incorrect IPFS token Uri
-
-  
-  // console.log("items", items);
+  const items = nfts.filter((nft: Nft) => nft.tokenId >= 10); // test version - delete the nfts that have incorrect IPFS token Uri
 
   return {
     props: { items },
   };
 };
-export default explore;
+export default Explore;
