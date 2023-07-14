@@ -1,14 +1,22 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { BsTranslate } from "react-icons/bs";
 import { FiMenu } from "react-icons/fi";
 import { MdClose } from "react-icons/md";
+import { HiUser } from "react-icons/hi";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
+  const router = useRouter();
   const [showMobileNav, setShowMobileNav] = useState(false);
-  console.log(showMobileNav);
+
+  const { data: session } = useSession();
+  console.log("session", session);
+  console.log("address", session?.user.name);
+
   return (
     <>
       <div className="flex h-24 items-center justify-between border-black px-10">
@@ -51,24 +59,36 @@ const Navbar = () => {
               className="z-50 cursor-pointer text-primary duration-200 hover:scale-125 hover:text-slate-400 md:hidden"
             />
             <div className="absolute left-0 top-0 z-30 flex h-full w-screen flex-col items-center justify-center gap-6 bg-black bg-opacity-95 text-3xl font-bold text-primary md:hidden">
+              {session && (
+                <Link
+                  className="rounded-full border-2 border-primary p-2 duration-700 hover:border-primary hover:bg-primary hover:text-base-100"
+                  href={`user/${session.user.name}`}
+                  onClick={() => setShowMobileNav(false)}
+                >
+                  <HiUser size={25} />
+                </Link>
+              )}
               <div className="text-lg">
                 <ConnectButton label="Conectar Cartera" />
               </div>
               <Link
-                href={"/collections"}
+                href={"/explore"}
                 className="duration-200 hover:text-slate-400"
+                onClick={() => setShowMobileNav(false)}
               >
                 Collections
               </Link>
               <Link
                 href={"/how-it-works"}
                 className="duration-200 hover:text-slate-400"
+                onClick={() => setShowMobileNav(false)}
               >
                 How It Works
               </Link>
               <Link
                 href={"/news"}
                 className="duration-200 hover:text-slate-400"
+                onClick={() => setShowMobileNav(false)}
               >
                 News
               </Link>
@@ -76,6 +96,7 @@ const Navbar = () => {
               <Link
                 href={"/create"}
                 className="duration-200 hover:text-slate-400"
+                onClick={() => setShowMobileNav(false)}
               >
                 Upload
               </Link>
@@ -105,6 +126,17 @@ const Navbar = () => {
               showBalance={false}
             />
           </div>
+          {session && (
+            <button
+              className="rounded-full border-2 border-secondary p-2 duration-700 hover:border-primary hover:bg-primary hover:text-base-100"
+              onClick={() => {
+                router.push(`/user/${session.user.name}`);
+                setShowMobileNav(false);
+              }}
+            >
+              <HiUser size={25} />
+            </button>
+          )}
         </div>
       </div>
     </>

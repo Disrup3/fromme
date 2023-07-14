@@ -40,9 +40,6 @@ const Home: NextPage = () => {
     },
   ];
 
-  const { data: session } = useSession();
-  console.log("session", session);
-
   return (
     <>
       <Head>
