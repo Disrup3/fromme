@@ -1,18 +1,28 @@
+/** eslint-disable */
 import { useForm, SubmitHandler } from "react-hook-form";
 import Dropzone, { useDropzone } from "react-dropzone";
-import {
-  Dispatch,
-  FC,
-  SetStateAction,
-  useMemo,
-  useState,
-} from "react";
+import { Dispatch, FC, SetStateAction, useMemo, useState } from "react";
 import { NFTStorage } from "nft.storage";
 import useNftfactoryContract from "../smart-contracts/hooks/create";
 
 interface Props {
   onChangeForm: Dispatch<SetStateAction<FormCreate>>;
 }
+
+type styleType = {
+  borderColor: string;
+  flex: number;
+  display: string;
+  alignItems: string;
+  padding: string;
+  borderWidth: number;
+  borderRadius: number;
+  borderStyle: string;
+  backgroundColor: string;
+  color: string;
+  outline: string;
+  transition: string;
+};
 
 const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
   const {
@@ -26,7 +36,8 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
   const [invalidImage, setInvalidImage] = useState<boolean>(false);
   const [tokenUri, setTokenUri] = useState({});
 
-  const { // Web hook para interactuar con el contrato
+  const {
+    // Web hook para interactuar con el contrato
     write,
     isLoading,
     changeIsLoading,
@@ -38,7 +49,8 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
     },
   });
 
-  watch((data) => { // Envia el form a create.tsx cada vez que hay un cambio
+  watch((data) => {
+    // Envia el form a create.tsx cada vez que hay un cambio
     onChangeForm(data);
   });
 
@@ -96,22 +108,7 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
     borderColor: "#ff1744",
   };
 
-  type styleType = {
-    borderColor: string;
-    flex: number;
-    display: string;
-    alignItems: string;
-    padding: string;
-    borderWidth: number;
-    borderRadius: number;
-    borderStyle: string;
-    backgroundColor: string;
-    color: string;
-    outline: string;
-    transition: string;
-  };
-
-  const style: styleType = useMemo(
+  const style = useMemo(
     () => ({
       ...baseStyle,
       ...(isFocused ? focusedStyle : {}),
@@ -123,19 +120,13 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
 
   return (
     <form
-      onSubmit={
-        () => {
-          void (() => {
-            handleSubmit((data) => {
-              if(data.image) {
-                setInvalidImage(true);
-              }
-              changeIsLoading(true);
-              onSubmit(data);
-            })
-          })();
+      onSubmit={handleSubmit((data) => {
+        if (data.image) {
+          setInvalidImage(true);
         }
-      }
+        changeIsLoading(true);
+        onSubmit(data);
+      })}
       className="mb-[7vh] flex min-w-[300px] flex-col items-center gap-3 bg-base-100 p-4 text-primary lg:mb-4"
     >
       {/* Título */}
@@ -160,7 +151,6 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
           <span className="text-accent">Required field</span>
         )}
       </div>
-      {/* Imagen */}
       <div className="flex w-full flex-col">
         <label>Image:</label>
         <Dropzone
@@ -172,7 +162,8 @@ const CreateNFTCollection: FC<Props> = ({ onChangeForm }) => {
         >
           {({ getRootProps, getInputProps }) => (
             <section>
-              <div {...getRootProps(style)}>
+              {/**@ts-ignore */}
+              <div {...getRootProps({ style })}>
                 <input {...getInputProps()} />
                 <p>Drag and drop some files here, or click to select files</p>
               </div>
