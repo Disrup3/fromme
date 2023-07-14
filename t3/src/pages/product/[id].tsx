@@ -133,11 +133,11 @@ const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, s
 
 
       // Image
-      const _formattedTokenUri = await formatTokenUri(nftData.tokenUri)
-      const metadataIPFS = await axios.get(_formattedTokenUri)
+      const _formattedTokenUri = formatTokenUri(nftData.tokenUri)
+      const metadataIPFS: MetadataIPFS = await axios.get(_formattedTokenUri)
   
       const image = metadataIPFS.data.image
-      const formattedImage = await formatTokenUri(image)
+      const formattedImage = formatTokenUri(image)
   
       setTokenImage(formattedImage)
     }
@@ -180,12 +180,12 @@ const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, s
   }
 
   useEffect(() => {
-    loadMainInfo()
+    loadMainInfo().catch(console.error);
   }, [])
 
   //////////////////////////////////////////
 
-  async function formatTokenUri(_tokenUri: string) {
+  function formatTokenUri(_tokenUri: string) {
     const formattedTokenUri = `https://ipfs.io/ipfs/${_tokenUri?.substring(7,200)}`;
     return formattedTokenUri
   }
@@ -234,20 +234,8 @@ const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, s
     setFormDataOffer({ ...formDataOffer, [e.target.name]: e.target.value });
   };
 
-
-
-  function shortenAddress(address: string): string {
-    // if (address.length < 10) {
-    //   throw new Error('Invalid Ethereum address');
-    // }
-  
-    const firstChars = address.slice(0, 6);
-    const lastChars = address.slice(-4);
-    return `${firstChars}...${lastChars}`;
-  }
-
-  const decimalPlaces: number = 2;
-  const creatorFeeInPerc: string = `${(creatorFee / 10000 * 100).toFixed(decimalPlaces)}%`;
+  const decimalPlaces = 2;
+  const creatorFeeInPerc: string = (creatorFee / 10000 * 100).toFixed(decimalPlaces) + '%';
   
   // console.log('creatorImage', creatorImage)
   console.log('isListed', isListed)
@@ -391,7 +379,7 @@ const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, s
             </button>
           )}
           {showFormList && (
-            <form onSubmit={handleListItemSubmit}>
+            <form onSubmit={() => handleListItemSubmit}> 
               <input
                 className="mt-2 mr-2 appearance-none bg-white border border-gray-400 rounded py-2 px-4 leading-tight focus:outline-none focus:border-blue-500"
                 type="number"
@@ -471,19 +459,19 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   });
   // console.log('nftData', nftData)
 
-  async function formatTokenUri(_tokenUri: string) {
+  function formatTokenUri(_tokenUri: string) {
     const formattedTokenUri = `https://ipfs.io/ipfs/${_tokenUri?.substring(7,200)}`;
     return formattedTokenUri
   }
 
   if (nftData) {
     // Image
-    const _formattedTokenUri = await formatTokenUri(nftData.tokenUri)
+    const _formattedTokenUri = formatTokenUri(nftData.tokenUri)
     // console.log('_formattedTokenUri', _formattedTokenUri)
-    const metadataIPFS = await axios.get(_formattedTokenUri)
+    const metadataIPFS: MetadataIPFS = await axios.get(_formattedTokenUri)
 
     const image = metadataIPFS.data.image
-    const tokenImage = await formatTokenUri(image)
+    const tokenImage = formatTokenUri(image)
     // console.log('tokenImage', tokenImage) 
 
     const currentTimestamp = Math.floor(Date.now() / 1000); // Get the current timestamp as a BigInt

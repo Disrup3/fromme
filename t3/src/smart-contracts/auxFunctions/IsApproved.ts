@@ -12,7 +12,7 @@ export default async function IsApproved(tokenId: number) {
       addresses.NFTFactory,
       NFTFactory_abi,
       provider
-    ) as ethers.Contract & { getApproved: (tokenId: number) => Promise<void> };
+    ) as ethers.Contract & { getApproved: (tokenId: number) => Promise<string> };
 
     const addressApproved = await contract.getApproved(tokenId);
 
