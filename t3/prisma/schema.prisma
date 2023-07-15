@@ -104,11 +104,13 @@ model Auction {
 }
 
 model Offer {
-    nft         Nft     @relation(fields: [tokenId], references: [tokenId], onDelete: Cascade)
-    tokenId     Int
-    buyer       String
-    amount      BigInt
-    isCancelled Boolean @default(false)
+    tokenId      Int
+    buyer        String
+    amount       BigInt
+    startingTime Int
+    isCancelled  Boolean @default(false)
 
-    @@unique([tokenId, buyer])
+    nft          Nft     @relation(fields: [tokenId], references: [tokenId], onDelete: Cascade)
+
+    @@unique([tokenId, startingTime])
 }

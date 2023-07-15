@@ -26,10 +26,16 @@ interface MetadataIPFS {
   }
 }
 
-type ItemData = {
+type ItemDataList = {
   amountList: number;
   durationList: number;
 };
+
+type ItemDataOffer = {
+  amountOffer: number;
+  durationOffer: number;
+};
+
 
 type NFTProductProps = {
   nftId: number,
@@ -83,15 +89,15 @@ type NFTProductProps = {
 const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, sellerData, offerData, buyerData } : NFTProductProps) => {
 
   const [showFormList, setShowFormList] = useState(false);
-  const [formDataList, setFormDataList] = useState<ItemData>({
+  const [formDataList, setFormDataList] = useState<ItemDataList>({
     amountList: 0,
     durationList: 0,
   });
 
-  const [showOfferList, setShowOfferList] = useState(false);
-  const [formDataOffer, setFormDataOffer] = useState<ItemData>({
-    amountList: 0,
-    durationList: 0,
+  const [showFormOffer, setShowFormOffer] = useState(false);
+  const [formDataOffer, setFormDataOffer] = useState<ItemDataOffer>({
+    amountOffer: 0,
+    durationOffer: 0,
   });
 
   // logic moved from the server side props:
@@ -125,7 +131,7 @@ const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, s
 
     const addressApproved = await IsApproved(nftId); 
     setIsApproved(addresses.FrommeMarketplace == addressApproved)
-    setIsOwnerd(ownerOFNft == userAddress)
+    setIsOwnerd(await ReadOwnerOf(nftId) == userAddress)
 
     if(nftData) {  
       setCreatorAddress(nftData.creator)
@@ -197,25 +203,25 @@ const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, s
   const handleListItemSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    setFormDataList(formDataList);
-    setShowFormList(false);
+    console.log("List Submited", nftId, formDataList)
 
-    // send data to contract
+    setFormDataList(formDataList);
     await ListItem(nftId, formDataList.amountList, formDataList.durationList)
+    setShowFormList(false);
   };
 
   const handleCreateOffer = () => {
-    setShowOfferList(!showOfferList);
+    setShowFormOffer(!showFormOffer);
 
   };
   const handleCreateOfferSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    setFormDataOffer(formDataOffer);
-    setShowOfferList(false);
+    console.log("Offer Submited", nftId, formDataOffer)
 
-    // send data to contract
-    await CreateOffer(nftId, formDataOffer.amountList, formDataOffer.durationList)
+    setFormDataOffer(formDataOffer);
+    await CreateOffer(nftId, formDataOffer.amountOffer, formDataOffer.durationOffer)
+    setShowFormOffer(false);
   };
 
   const handleCancelListSubmit = async (e: React.FormEvent) => {
@@ -227,10 +233,12 @@ const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, s
   };
 
   const handleInputChangeList = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("formDataList :: ", formDataList)
     setFormDataList({ ...formDataList, [e.target.name]: e.target.value });
   };
 
   const handleInputChangeOffer = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("formDataOffer :: ", formDataOffer)
     setFormDataOffer({ ...formDataOffer, [e.target.name]: e.target.value });
   };
 
@@ -238,10 +246,13 @@ const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, s
   const creatorFeeInPerc: string = (creatorFee / 10000 * 100).toFixed(decimalPlaces) + '%';
   
   // console.log('creatorImage', creatorImage)
-  console.log('isListed', isListed)
-  console.log('hasOffer', hasOffer)
-  console.log('isOwner', isOwner)
-  console.log('isApproved', isApproved)
+  // console.log('isListed', isListed)
+  // console.log('hasOffer', hasOffer)
+  // console.log('isOwner', isOwner)
+  // console.log('isApproved', isApproved)
+
+  // console.log('ownerOFNft', ownerOFNft) 
+  // console.log('userAddress', userAddress) 
 
   return (
     <div className="flex w-full justify-evenly p-6">
@@ -373,13 +384,15 @@ const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, s
               Approve Item
             </button>
           )}
+
+
           {isListed == false && isOwner == true && isApproved == true && (
             <button className="w-full rounded-full bg-yellow-500 py-2 font-semibold text-base-100" onClick={handleListItem}>
-              {showFormList ? "Close": "List Item"}
+              {showFormList ? "Close List": "List Item"}
             </button>
           )}
           {showFormList && (
-            <form onSubmit={() => handleListItemSubmit}> 
+            <form onSubmit={handleListItemSubmit}> 
               <input
                 className="mt-2 mr-2 appearance-none bg-white border border-gray-400 rounded py-2 px-4 leading-tight focus:outline-none focus:border-blue-500"
                 type="number"
@@ -400,7 +413,39 @@ const NFTProduct = ({ nftId, userAddress, nftData, listedNftData, creatorData, s
                 className="mt-5 w-full rounded-full bg-gray-500 py-2 font-semibold text-base-100"
                 type="submit"
               >
-                Submit
+                Submit List
+              </button>
+            </form>
+          )}
+
+          {isOwner == false && (
+            <button className="w-full rounded-full bg-blue-500 py-2 font-semibold text-base-100" onClick={handleCreateOffer}>
+              {showFormOffer ? "Close Offer": "Make Offer"}
+            </button>
+          )}
+          {showFormOffer && (
+            <form onSubmit={handleCreateOfferSubmit}> 
+              <input
+                className="mt-2 mr-2 appearance-none bg-white border border-gray-400 rounded py-2 px-4 leading-tight focus:outline-none focus:border-blue-500"
+                type="number"
+                name="amountOffer"
+                placeholder="amount in ETH"
+                value={formDataOffer.amountOffer}
+                onChange={handleInputChangeOffer}
+              />
+              <input
+                className="mt-2 appearance-none bg-white border border-gray-400 rounded py-2 px-4 leading-tight focus:outline-none focus:border-blue-500"
+                type="number"
+                name="durationOffer"
+                placeholder="duration in seconds"
+                value={formDataOffer.durationOffer}
+                onChange={handleInputChangeOffer}
+              />
+              <button
+                className="mt-5 w-full rounded-full bg-gray-500 py-2 font-semibold text-base-100"
+                type="submit"
+              >
+                Submit Offer
               </button>
             </form>
           )}

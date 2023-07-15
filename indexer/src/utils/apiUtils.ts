@@ -3,9 +3,9 @@ import axios from "axios";
 
 export const callApi = async (endpoint: string, data: any, isDead = false) => {
   try {
-    console.log("endpoint:", endpoint);
+    console.log("endpoint:", endpoint, ' : ', `${process.env.API_ENDPOINT}${endpoint}`);
     const x = await axios.post(`${process.env.API_ENDPOINT}${endpoint}`, data);
-    console.log(x.data)
+    console.log('DATA :: ', x.data)
     console.log("callapi success");
     return true
   } catch (error) {
